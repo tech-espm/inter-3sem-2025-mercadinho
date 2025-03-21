@@ -49,3 +49,61 @@ where data between '2025-03-10 00:00:00' and '2025-03-14 23:59:59' and ocupado =
 group by id_sensor, dia
 order by id_sensor, dia
 ;
+
+------- Nossas
+-- Contagem de visitas na geladeira por smn:
+
+select id_sensor, date(data) dia, count(ocupado) from presenca
+WHERE data BETWEEN DATE_SUB(NOW(), INTERVAL 7 DAY) AND NOW() and ocupado = 0
+group by id_sensor, dia
+order by id_sensor, dia
+;
+
+-- Contagem de visitas na geladeira por mes:
+
+select id_sensor, date(data) dia, count(ocupado) from presenca
+WHERE data BETWEEN DATE_SUB(NOW(), INTERVAL 30 DAY) AND NOW() and ocupado = 0
+group by id_sensor, dia
+order by id_sensor, dia
+;
+
+-- Fluxo da ultima semana:
+
+SELECT id_sensor, SUM(entrada) / 7 AS entrantes FROM contagem
+WHERE data BETWEEN DATE_SUB(NOW(), INTERVAL 8 DAY) AND DATE_SUB(NOW(), INTERVAL 1 DAY)
+AND id_sensor = ?
+GROUP BY id_sensor
+ORDER BY id_sensor;
+
+
+-- Fluxo de hj:
+
+select id_sensor, sum(entrada) entrantes from contagem
+where date(data) = date(now()) and id_sensor = ?
+group by id_sensor
+order by id_sensor
+;
+
+-- Fluxo por hr de ontem:
+
+select id_sensor, hour(data) hora, sum(entrada) from contagem
+WHERE data = DATE_SUB(NOW(), INTERVAL 1 DAY) and id_sensor = ?
+group by id_sensor, hora
+order by id_sensor, hora
+;
+
+-- Fluxo por hr de hj:
+
+select id_sensor, hour(data) hora, sum(entrada) from contagem
+WHERE date(data) = date(NOW()) and id_sensor = ?
+group by id_sensor, hora
+order by id_sensor, hora
+;
+
+-- Fluxo por hr de hj:
+
+select id_sensor, hour(data) hora, sum(entrada) from passagem
+WHERE data BETWEEN DATE_SUB(NOW(), INTERVAL 7 DAY) AND NOW() and id_sensor = ?
+group by id_sensor, hora
+order by id_sensor, hora
+;
