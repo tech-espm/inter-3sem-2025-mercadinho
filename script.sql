@@ -25,6 +25,22 @@ CREATE TABLE presenca (
   KEY presenca_id_sensor (id_sensor)
 );
 
+-- topic v3/espm/devices/passage01/up
+-- topic v3/espm/devices/passage02/up
+-- { "end_device_ids": { "device_id": "passage01" }, "uplink_message": { "rx_metadata": [{ "timestamp": 2040934975 }], "decoded_payload": { "battery": 0, "period_in": 0, "period_out": 0 } } }
+CREATE TABLE passagem (
+  id bigint NOT NULL AUTO_INCREMENT,
+  data datetime NOT NULL,
+  id_sensor tinyint NOT NULL,
+  delta int NOT NULL,
+  bateria tinyint NOT NULL,
+  entrada int NOT NULL,
+  saida int NOT NULL,
+  PRIMARY KEY (id),
+  KEY passagem_data_id_sensor (data, id_sensor),
+  KEY passagem_id_sensor (id_sensor)
+);
+
 -- Query para monitorar em tempo real
 (select id_sensor, ocupado, time_to_sec(timediff(now(), data)) delta_agora from presenca where id_sensor = 1 order by id desc limit 1)
 union all
@@ -67,11 +83,11 @@ group by id_sensor, dia
 order by id_sensor, dia
 ;
 
--- Fluxo da ultima semana:
+-- Fluxo do horário comercial da última semana:
 
-SELECT id_sensor, SUM(entrada) / 7 AS entrantes FROM contagem
-WHERE data BETWEEN DATE_SUB(NOW(), INTERVAL 8 DAY) AND DATE_SUB(NOW(), INTERVAL 1 DAY)
-AND id_sensor = ?
+SELECT id_sensor, SUM(entrada) / 7 AS entrantes FROM passagem
+WHERE EXTRACT(HOUR FROM data) BETWEEN 9 AND 18 AND data BETWEEN DATE_SUB(NOW(), INTERVAL 8 DAY) AND DATE_SUB(NOW(), INTERVAL 1 DAY)
+AND id_sensor = 2
 GROUP BY id_sensor
 ORDER BY id_sensor;
 
