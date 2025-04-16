@@ -97,4 +97,14 @@ def obterIdMaximo(id,tabela):
 def inserirPassagem(registros):
 	with Session(engine) as sessao, sessao.begin():
 		for registro in registros:
-			sessao.execute(text("INSERT INTO SensorPassagem (Id_RegF, Dt_SenF, Id_SenF, En_SenF, Sd_SenF) VALUES (:id, :data, :id_sensor, :delta, :umidade, :temperatura)"), registro)
+			sessao.execute(text("INSERT INTO SensorPassagem (Id_RegF, Dt_SenF, Id_SenF, En_SenF, Sd_SenF) VALUES (:id, :data, :id_sensor, :entrada, :saida)"), registro)
+
+def inserirContato(registros):
+	with Session(engine) as sessao, sessao.begin():
+		for registro in registros:
+			sessao.execute(text("INSERT INTO SensorContato (Id_RegC, Dt_SenC, Id_SenC, Tm_SenC, Ab_SenC) VALUES (:id, :data, :id_sensor, :delta, :fechado)"), registro)
+
+def inserirPresenca(registros):
+	with Session(engine) as sessao, sessao.begin():
+		for registro in registros:
+			sessao.execute(text("INSERT INTO SensorPresenca (Id_RegP, Dt_SenP, Tm_SenP, Oc_Sens, Id_SenP) VALUES (:id, :data, :delta, :ocupado, :id_sensor)"), registro)

@@ -2,6 +2,7 @@ from flask import Flask, render_template, json, request, Response
 import config
 import requests
 from datetime import datetime
+# nessa linha de baixo
 import banco
 
 app = Flask(__name__)
@@ -21,11 +22,26 @@ def obterDados():
     maior_id = 1000
 
     resultado = requests.get(f'{config.url_api}?sensor=passage&id_inferior={maior_id}&id_sensor=2')
-    dados_novos = resultado.json()
+    passagem = resultado.json()
 
-	# Inserir os dados novos no banco
-    if dados_novos and len(dados_novos) > 0:
-        banco.inserirPassagem(dados_novos)
+	# Inserir os dados `passagem` novos no banco
+    if passagem and len(passagem) > 0:
+        print("🎭🐧")
+
+    resultado = requests.get(f'{config.url_api}?sensor=magnetic&data_inicial=2000-01-01&data_final=2025-02-28')
+    contato = resultado.json() 
+
+    # Inserir os dados `contato` novos no banco
+    if contato and len(contato) > 0:
+        print("🎭🐧")
+
+    resultado = requests.get(f'{config.url_api}?sensor=presence&data_inicial=2000-01-01&data_final=2025-02-28')
+    presenca = resultado.json() 
+
+    # Inserir os dados `presença` novos no banco
+    if presenca and len(presenca) > 0:
+        print("🎭🐧")
+    
 	# Trazer os dados do banco
 
     dados = [
