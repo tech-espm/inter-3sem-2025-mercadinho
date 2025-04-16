@@ -2,6 +2,7 @@ from flask import Flask, render_template, json, request, Response
 import config
 import requests
 from datetime import datetime
+import banco
 
 app = Flask(__name__)
 
@@ -17,13 +18,14 @@ def sobre():
 @app.get('/obterDados')
 def obterDados():
     # Obter o maior id do banco
-    maior_id = 84164
+    maior_id = 1000
 
-    resultado = requests.get(f'{config.url_api}?sensor=creative&id_inferior={maior_id}')
+    resultado = requests.get(f'{config.url_api}?sensor=passage&id_inferior={maior_id}&id_sensor=2')
     dados_novos = resultado.json()
 
 	# Inserir os dados novos no banco
-
+    if dados_novos and len(dados_novos) > 0:
+        banco.inserirPassagem(dados_novos)
 	# Trazer os dados do banco
 
     dados = [

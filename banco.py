@@ -8,6 +8,9 @@
 # (MySQL, Postgres, SQL Server, Oracle...) e do driver real. Vamos utilizar o driver MySQL-Connector,
 # que também precisa ser instalado (de preferência com o VS Code fechado):
 # python -m pip install mysql-connector-python
+# tava dando erro aqui gente porque o python 13. não tem suporte oficial ainda para
+# SQLAlchemy então tem q dar update nele 
+# pip install --upgrade sqlalchemy
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import Session
 from config import conexao_banco
@@ -80,3 +83,18 @@ def criarPessoa(nome, email):
 
 # Para mais informações:
 # https://docs.sqlalchemy.org/en/14/tutorial/dbapi_transactions.html
+
+def obterIdMaximo(id,tabela):
+	with Session(engine) as sessao:
+		registro = sessao.execute(text(f"SELECT MAX({id}) {id} FROM {tabela}")).first()
+
+		if registro == None or registro.id == None:
+			return 0
+		else:
+			return registro.id
+
+
+def inserirPassagem(registros):
+	with Session(engine) as sessao, sessao.begin():
+		for registro in registros:
+			sessao.execute(text("INSERT INTO SensorPassagem (Id_RegF, Dt_SenF, Id_SenF, En_SenF, Sd_SenF) VALUES (:id, :data, :id_sensor, :delta, :umidade, :temperatura)"), registro)

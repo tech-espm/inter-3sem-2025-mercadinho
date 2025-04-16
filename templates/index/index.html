@@ -60,7 +60,7 @@
 			let response = await fetch("/obterDados");
 
 			if (response.ok) {
-
+				console.log(response)
 				Swal.close();
 
 				let div = document.getElementById("div-grafico");

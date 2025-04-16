@@ -62,7 +62,7 @@ order by id_sensor, dia
 
 -- Fluxo do horário comercial da última semana:
 
-SELECT id_sensor, SUM(entrada) / 7 AS entrantes FROM passagem
+SELECT id_sensor, SUM(entrada) / 7 AS entrantes FROM passage
 WHERE EXTRACT(HOUR FROM data) BETWEEN 9 AND 18 AND data BETWEEN DATE_SUB(NOW(), INTERVAL 8 DAY) AND DATE_SUB(NOW(), INTERVAL 1 DAY)
 AND id_sensor = 2
 GROUP BY id_sensor
@@ -95,7 +95,7 @@ order by id_sensor, hora
 
 -- Fluxo por hr de hj:
 
-select id_sensor, hour(data) hora, sum(entrada) from passagem
+select id_sensor, hour(data) hora, sum(entrada) from passage
 WHERE data BETWEEN DATE_SUB(NOW(), INTERVAL 7 DAY) AND NOW() and id_sensor = ?
 group by id_sensor, hora
 order by id_sensor, hora
