@@ -2,7 +2,8 @@ img {
 	max-width: 100%;
 }
 
-html, body {
+html,
+body {
 	/* Para fazer o rodapé ficar sempre na parte inferior da página ;) */
 	min-height: 100vh;
 }
@@ -18,6 +19,11 @@ html, body {
 	flex-wrap: nowrap;
 }
 
+.icone-navbar-cima {
+	font-size: 20px;
+	color: aqua;
+}
+
 .conteudo {
 	/* Para fazer o rodapé ficar sempre na parte inferior da página ;) */
 	flex: 1 1 auto;
@@ -29,7 +35,66 @@ html, body {
 	padding: 2rem;
 }
 
-.link-rodape, .link-rodape:hover {
+.link-rodape,
+.link-rodape:hover {
 	color: white;
 	text-decoration: none;
+}
+
+.fundo-cinza-padding {
+	background-color: #e3e3e3;
+	padding: 30px 70px;
+}
+
+.fundo-branco-borda-arredondada {
+	background-color: white;
+	border-radius: 5px;
+}
+
+.margin-row-interna {
+	margin-left: 20px;
+	margin-right: 20px;
+	margin-top: 40px;
+	margin-bottom: 40px;
+}
+
+.formatacao-texto-sobre {
+	text-align: justify;
+}
+
+.fundo-cinza-card {
+	background-color: #e3e3e3;
+	border-radius: 5px;
+}
+
+.flex-space-between {
+	display: flex;
+	justify-content: space-between;
+}
+
+.padding-left-right-row-integrantes {
+	padding-left: 15px;
+	padding-right: 15px;
+}
+
+.margin-reduzida-row-integrantes {
+	margin-top: 15px;
+	margin-bottom: 15px;
+}
+
+.centralizar {
+	text-align: center;
+}
+
+.flex-space-evenly {
+	display: flex;
+	justify-content: space-evenly;
+}
+
+.margin-bottom-card {
+	margin-bottom: 20px;
+}
+
+.padding-reduzido {
+	padding: 5px;
 }

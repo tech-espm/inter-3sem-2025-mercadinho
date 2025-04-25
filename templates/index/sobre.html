@@ -1,17 +1,122 @@
-{% extends 'layout.html' %}
+{% extends 'layout.html' %} {% block body %}
 
-{% block body %}
+<div class="fundo-cinza-padding">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="container-fluid fundo-branco-borda-arredondada">
+        <div class="row margin-row-interna">
+          <div class="col-lg-5">
+            <h1>SOBRE NÓS</h1>
+            <p class="formatacao-texto-sobre pt-4">
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolores
+              porro, possimus ullam corrupti ipsa at nihil. Ipsam quod eos
+              pariatur aut, quisquam quae repellendus vel nisi minus sequi
+              perspiciatis fugit.Lorem ipsum dolor sit amet consectetur
+              adipisicing elit. Dolores porro, possimus ullam corrupti ipsa at
+              nihil. Ipsam quod eos pariatur aut, quisquam quae repellendus vel
+              nisi minus sequi perspiciatis fugit.
+            </p>
+          </div>
+          <div class="col-lg-7 centralizar">
+            <img
+              src="/static/img/pracegoler.png"
+              alt="Placeholder"
+              width="600px"
+            />
+          </div>
+        </div>
+        <div
+          class="row margin-row-interna flex-space-between padding-left-right-row-integrantes margin-reduzida-row-integrantes"
+        >
+          <div
+            class="col-lg-3 fundo-cinza-card margin-bottom-card padding-reduzido"
+          >
+            <div class="container-fluid padding-reduzido">
+              <div class="row">
+                <div class="col-6">
+                  <img src="/static/img/circulo.png" alt="" />
+                </div>
+                <div class="col-6">
+                  <p>Alexandre Martinelli</p>
+                  <p>Linkedin</p>
+                  <p>GitHub</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="col-lg-3 fundo-cinza-card margin-bottom-card padding-reduzido"
+          >
+            <div class="container-fluid padding-reduzido">
+              <div class="row">
+                <div class="col-6">
+                  <img src="/static/img/circulo.png" alt="" />
+                </div>
+                <div class="col-6">
+                  <p>Gabriel Cardoso</p>
+                  <p>Linkedin</p>
+                  <p>GitHub</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="col-lg-3 fundo-cinza-card margin-bottom-card padding-reduzido"
+          >
+            <div class="container-fluid padding-reduzido">
+              <div class="row">
+                <div class="col-6">
+                  <img src="/static/img/circulo.png" alt="" />
+                </div>
+                <div class="col-6">
+                  <p>Hugo Coscelli</p>
+                  <p>Linkedin</p>
+                  <p>GitHub</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
-<div class="container-fluid">
+        <div
+          class="row margin-row-interna flex-space-evenly padding-left-right-row-integrantes margin-reduzida-row-integrantes"
+        >
+          <div
+            class="col-lg-3 fundo-cinza-card margin-bottom-card padding-reduzido"
+          >
+            <div class="container-fluid padding-reduzido">
+              <div class="row">
+                <div class="col-6">
+                  <img src="/static/img/circulo.png" alt="" />
+                </div>
+                <div class="col-6">
+                  <p>Julia Mullis</p>
+                  <p>Linkedin</p>
+                  <p>GitHub</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="col-lg-3 fundo-cinza-card margin-bottom-card padding-reduzido"
+          >
+            <div class="container-fluid padding-reduzido">
+              <div class="row">
+                <div class="col-6">
+                  <img src="/static/img/circulo.png" alt="" />
+                </div>
+                <div class="col-6">
+                  <p>Theo Gaspar</p>
+                  <p>Linkedin</p>
+                  <p>GitHub</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-	<h1>
-		Sobre
-	</h1>
-
-	<p>
-		Sobre nós! 😊
-	</p>
-
+  {% endblock %}
 </div>
-
-{% endblock %}
