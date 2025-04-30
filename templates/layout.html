@@ -21,6 +21,7 @@
       type="text/css"
       href="/static/css/bootstrap.min.css"
     />
+    <link rel="stylesheet" type="text/css" href="/static/lib/fontawesome-free/css/all.min.css" />
     <link
       rel="stylesheet"
       type="text/css"
@@ -39,58 +40,127 @@
     {% block head %}{% endblock %}
   </head>
   <body>
-    <div class="limitador">
-      <!--
-			Barra padrão do Bootstrap
+    <div id="wrapper">
 
-			https://getbootstrap.com/docs/4.6/components/navbar/
-		-->
+      <ul
+        class="navbar-nav bg-gradient-primary sidebar sidebar-light toggled accordion d-none d-md-flex"
+        id="accordionSidebar"
+      >
+        <li class="nav-item text-center p-3">
+          <img src="/static/img/circulo.png" style="max-width: 100%" />
+        </li>
 
-      <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <a class="navbar-brand, icone-navbar-cima" href="/"
-          ><img src="/static/img/painel.png" alt="Ícone painel" width="40px"
-        /></a>
+        <hr class="sidebar-divider my-0" />
 
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-toggle="collapse"
-          data-target="#navbarToggler"
-          aria-controls="navbarToggler"
-          aria-expanded="false"
-          aria-label="Alternar navegação"
-        >
-          <span class="navbar-toggler-icon"></span>
-        </button>
+        <!-- Para deixar sempre em destaque, basta adicionar a classe active -->
+        <li class="nav-item">
+          <a class="nav-link" href="/">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span>Dashboard</span>
+          </a>
+        </li>
 
-        <div class="collapse navbar-collapse" id="navbarToggler">
-          <div class="navbar-nav">
-            <a class="nav-link" href="/sobre">Sobre</a>
-          </div>
+        <li class="nav-item">
+            <a
+                class="nav-link collapsed"
+                href="#"
+                data-toggle="collapse"
+                data-target="#collapsePredio"
+                aria-expanded="true"
+                aria-controls="collapsePredio"
+            >
+                <i class="fas fa-vr-cardboard"></i>
+                <span>Tours</span>
+            </a>
+            <div id="collapsePredio" class="collapse" data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <a class="collapse-item" href="<%- root %>/tour/criar">Criar</a>
+                    <a class="collapse-item" href="<%- root %>/tour/listar">Gerenciar</a>
+                </div>
+            </div>
+        </li>
+
+        <hr class="sidebar-divider d-none d-md-block" />
+
+        <div class="text-center d-none d-md-inline">
+          <button class="rounded-circle border-0" id="sidebarToggle"></button>
         </div>
-      </nav>
+      </ul>
 
-      <div class="conteudo">{% block body %}{% endblock %}</div>
+      <div id="content-wrapper" class="d-flex flex-column">
 
-      <div class="rodape">
-        <a
-          class="link-rodape"
-          href="https://sistemasdeinformacao.espm.edu.br"
-          target="_blank"
-        >
-          <small
-            >Desenvolvido em 2025 pelo curso de Sistemas de Informação da
-            ESPM</small
+        <div id="content">
+          <!--
+            Barra padrão do Bootstrap
+
+            https://getbootstrap.com/docs/4.6/components/navbar/
+          -->
+          <nav class="navbar navbar-expand navbar-dark bg-secondary topbar mb-4 static-top shadow">
+
+            <button type="button" id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+              <i class="fa fa-bars"></i>
+            </button>
+
+            <!-- include("topbar-search") -->
+
+            <ul class="navbar-nav ml-auto">
+
+              <!-- include("topbar-extra") -->
+
+              <li class="nav-item dropdown no-arrow">
+                <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <span class="mr-2 d-none d-md-inline text-gray-600 small">Usuário</span>
+                  <img class="img-profile rounded-circle" src="/static/img/undraw_profile_pic.svg">
+                </a>
+
+                <div class="dropdown-menu dropdown-menu-right animated--grow-in"
+                  aria-labelledby="userDropdown">
+                  <a class="dropdown-item" href="/perfil">
+                    <i class="fas fa-user fa-sm fa-fw mr-2 op-40"></i>
+                    Perfil
+                  </a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="/logout">
+                    <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 op-40"></i>
+                    Logout
+                  </a>
+                </div>
+              </li>
+
+            </ul>
+
+          </nav>
+
+          <div class="limitador">
+            <div class="conteudo">{% block body %}{% endblock %}</div>
+          </div>
+
+        </div>
+
+        <div class="rodape">
+          <a
+            class="link-rodape"
+            href="https://sistemasdeinformacao.espm.edu.br"
+            target="_blank"
           >
-          <br />
-          <img
-            src="/static/img/logo-si-512.png"
-            style="width: 100%; max-width: 150px"
-          />
-        </a>
+            <small
+              >Desenvolvido em 2025 pelo curso de Sistemas de Informação da
+              ESPM</small
+            >
+            <br />
+            <img
+              src="/static/img/logo-si-512.png"
+              style="width: 100%; max-width: 150px"
+            />
+          </a>
+        </div>
       </div>
 
-      {% block rodape %}{% endblock %}
     </div>
+
+    <script type="text/javascript" src="/static/js/admin.js"></script>
+
+    {% block rodape %}{% endblock %}
   </body>
 </html>

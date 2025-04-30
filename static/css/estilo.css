@@ -11,12 +11,6 @@ body {
 .limitador {
 	max-width: 1200px;
 	margin: 0px auto;
-
-	/* Para fazer o rodapé ficar sempre na parte inferior da página ;) */
-	min-height: 100vh;
-	display: flex;
-	flex-direction: column;
-	flex-wrap: nowrap;
 }
 
 .icone-navbar-cima {
@@ -97,4 +91,20 @@ body {
 
 .padding-reduzido {
 	padding: 5px;
+}
+
+.sidebar-light .nav-item .nav-link i {
+	color: rebeccapurple;
+}
+
+.sidebar-light .nav-item .nav-link:active i, .sidebar-light .nav-item .nav-link:focus i, .sidebar-light .nav-item .nav-link:hover i {
+	color: lime;
+}
+
+.sidebar-light .nav-item .nav-link {
+	color: #000;
+}
+
+.sidebar-light .nav-item .nav-link:active, .sidebar-light .nav-item .nav-link:focus, .sidebar-light .nav-item .nav-link:hover {
+	color: pink;
 }
