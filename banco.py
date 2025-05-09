@@ -97,14 +97,16 @@ def obterIdMaximo(id,tabela):
 def inserirPassagem(registros):
 	with Session(engine) as sessao, sessao.begin():
 		for registro in registros:
-			sessao.execute(text("INSERT INTO SensorPassagem (Id_RegF, Dt_SenF, Id_SenF, En_SenF, Sd_SenF) VALUES (:id, :data, :id_sensor, :entrada, :saida)"), registro)
+			sessao.execute(text("INSERT INTO SensorPassagem (Id_RegF, Dt_SenF, Id_SenF, En_SenF, Sd_SenF, Id_Loja) VALUES (:id, :data, :id_sensor, :entrada, :saida, 1)"), registro)
 
 def inserirContato(registros):
 	with Session(engine) as sessao, sessao.begin():
 		for registro in registros:
-			sessao.execute(text("INSERT INTO SensorContato (Id_RegC, Dt_SenC, Id_SenC, Tm_SenC, Ab_SenC) VALUES (:id, :data, :id_sensor, :delta, :fechado)"), registro)
-
+			if registro["id_sensor"] < 4:
+				sessao.execute(text("INSERT INTO SensorContato (Id_RegC, Dt_SenC, Id_SenC, Tm_SenC, Ab_SenC, Id_Gelad) VALUES (:id, :data, :id_sensor, :delta, :fechado, :id_sensor)"), registro)
+			
 def inserirPresenca(registros):
 	with Session(engine) as sessao, sessao.begin():
 		for registro in registros:
-			sessao.execute(text("INSERT INTO SensorPresenca (Id_RegP, Dt_SenP, Tm_SenP, Oc_Sens, Id_SenP) VALUES (:id, :data, :delta, :ocupado, :id_sensor)"), registro)
+			if registro["id_sensor"] < 4:
+				sessao.execute(text("INSERT INTO SensorPresenca (Id_RegP, Dt_SenP, Tm_SenP, Oc_Sens, Id_SenP, Id_Gelad) VALUES (:id, :data, :delta, :ocupado, :id_sensor, :id_sensor)"), registro)
