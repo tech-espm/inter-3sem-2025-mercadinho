@@ -19,7 +19,7 @@ def sobre():
 @app.get('/obterDados')
 def obterDados():
     # Obter o maior id do banco
-    maior_id = banco.obterIdMaximo('id', 'SensorPassagem')
+    maior_id = banco.obterIdMaximo('Id_RegF', 'SensorPassagem')
 
     resultado = requests.get(f'{config.url_api}?sensor=passage&id_inferior={maior_id}&id_sensor=2')
     passagem = resultado.json()
@@ -28,7 +28,7 @@ def obterDados():
     if passagem and len(passagem) > 0:
         banco.inserirPassagem(passagem)
     
-    maior_id = banco.obterIdMaximo('id', 'SensorContato')
+    maior_id = banco.obterIdMaximo('Id_RegC', 'SensorContato')
 
     resultado = requests.get(f'{config.url_api}?sensor=magnetic&id_inferior={maior_id}')
     contato = resultado.json() 
@@ -37,7 +37,7 @@ def obterDados():
     if contato and len(contato) > 0:
         banco.inserirContato(contato)
         
-    maior_id = banco.obterIdMaximo('id', 'SensorPresenca')
+    maior_id = banco.obterIdMaximo('Id_RegP', 'SensorPresenca')
 
     resultado = requests.get(f'{config.url_api}?sensor=presence&id_inferior={maior_id}')
     presenca = resultado.json() 
