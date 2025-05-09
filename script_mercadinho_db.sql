@@ -155,3 +155,16 @@ ENGINE = InnoDB;
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+
+-- -----------------------------------------------------
+-- Table `loja` --> Inserção de dados
+-- -----------------------------------------------------
+insert into loja values(1, 'Pequeno Francisco');
+
+-- -----------------------------------------------------
+-- Table `geladeira` --> Inserção de dados
+-- -----------------------------------------------------
+
+insert into geladeira values(1, 1, 'Tom e Jerrys');
+insert into geladeira values(2, 1, 'Kibão');
+insert into geladeira values(3, 1, 'Batche de Latche');

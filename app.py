@@ -26,21 +26,21 @@ def obterDados():
 
 	# Inserir os dados `passagem` novos no banco
     if passagem and len(passagem) > 0:
-        print("🎭🐧")
+        banco.inserirPassagem(passagem)
 
     resultado = requests.get(f'{config.url_api}?sensor=magnetic&data_inicial=2000-01-01&data_final=2025-02-28')
     contato = resultado.json() 
 
     # Inserir os dados `contato` novos no banco
     if contato and len(contato) > 0:
-        print("🎭🐧")
+        banco.inserirContato(contato)
 
     resultado = requests.get(f'{config.url_api}?sensor=presence&data_inicial=2000-01-01&data_final=2025-02-28')
     presenca = resultado.json() 
 
     # Inserir os dados `presença` novos no banco
     if presenca and len(presenca) > 0:
-        print("🎭🐧")
+        banco.inserirPresenca(presenca)
     
 	# Trazer os dados do banco
 
