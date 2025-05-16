@@ -1,0 +1,135 @@
+{% extends 'layout.html' %}
+
+{% block head %}
+<!-- Babylon.js -->
+<script src="https://cdn.babylonjs.com/babylon.js"></script>
+<script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
+<script src="https://cdn.babylonjs.com/gui/babylon.gui.min.js"></script>
+
+<style type="text/css">
+    #canvasZone {
+        position: relative;
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        min-height: 400px;
+        height: 60vh;
+    }
+
+    #renderCanvas {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        border: none;
+        outline: none;
+        user-select: none;
+        touch-action: none;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+
+<div class="container-fluid">
+    <h1>Projeto</h1>
+
+    <div id="canvasZone"><canvas id="renderCanvas"></canvas></div>
+
+    <!-- 🔘 Botões de Controle de Portas -->
+    <div class="text-center my-4">
+        <button class="btn btn-secondary mx-2" onclick="togglePorta(1)">Alternar Porta 1</button>
+        <button class="btn btn-secondary mx-2" onclick="togglePorta(2)">Alternar Porta 2</button>
+        <button class="btn btn-secondary mx-2" onclick="togglePorta(3)">Alternar Porta 3</button>
+    </div>
+
+    <!-- Resto do seu conteúdo, formulários e gráficos continuam iguais -->
+    <!-- ... -->
+
+</div>
+
+<!-- BabylonJS - Controle das portas -->
+<script type="text/javascript">
+    "use strict";
+
+    let canvas = document.getElementById("renderCanvas");
+    let engine = null;
+    let scene = null;
+
+    let portaModelos = {
+        1: { aberta: null, fechada: null, abertaAtiva: false },
+        2: { aberta: null, fechada: null, abertaAtiva: false },
+        3: { aberta: null, fechada: null, abertaAtiva: false },
+    };
+
+    async function carregarModelo(path, scene) {
+        const result = await BABYLON.SceneLoader.ImportMeshAsync("", "/static/glb/", path, scene);
+        return result.meshes[0];
+    }
+
+    async function createScene() {
+        scene = new BABYLON.Scene(engine);
+
+        const hdrTexture = BABYLON.CubeTexture.CreateFromPrefilteredData("/static/glb/environment.dds", scene);
+        scene.createDefaultSkybox(hdrTexture, true);
+
+        scene.createDefaultCameraOrLight(true, true, true);
+        const camera = scene.activeCamera;
+        camera.alpha = Math.PI / 2;
+
+        // 🎯 Load modelo base fixo
+        await carregarModelo("SemPorta.glb", scene);
+
+        // 🚪 Porta 1
+        portaModelos[1].fechada = await carregarModelo("Porta01Fechada.glb", scene);
+        portaModelos[1].aberta = await carregarModelo("Porta01Aberta.glb", scene);
+        portaModelos[1].aberta.setEnabled(false);
+
+        // 🚪 Porta 2
+        portaModelos[2].fechada = await carregarModelo("Porta02Fechada.glb", scene);
+        portaModelos[2].aberta = await carregarModelo("Porta02Aberta.glb", scene);
+        portaModelos[2].aberta.setEnabled(false);
+
+        // 🚪 Porta 3
+        portaModelos[3].fechada = await carregarModelo("Porta03Fechada.glb", scene);
+        portaModelos[3].aberta = await carregarModelo("Porta03Aberta.glb", scene);
+        portaModelos[3].aberta.setEnabled(false);
+    }
+
+    function togglePorta(index) {
+        const porta = portaModelos[index];
+        if (!porta.aberta || !porta.fechada) return;
+
+        porta.abertaAtiva = !porta.abertaAtiva;
+        porta.aberta.setEnabled(porta.abertaAtiva);
+        porta.fechada.setEnabled(!porta.abertaAtiva);
+    }
+
+    async function init() {
+        try {
+            engine = new BABYLON.Engine(canvas, true, {
+                preserveDrawingBuffer: false,
+                stencil: false,
+                disableWebGL2Support: false
+            });
+            await createScene();
+        } catch (ex) {
+            alert("Erro ao criar a engine: " + ex.message || ex.toString());
+        }
+
+        window.addEventListener("resize", function () {
+            engine.resize();
+        });
+
+        engine.runRenderLoop(function () {
+            if (scene && scene.activeCamera) {
+                scene.render();
+            }
+        });
+    }
+
+    // ✅ Garante que Babylon esteja carregado antes de usar
+    window.addEventListener("load", init);
+</script>
+
+{% endblock %}
