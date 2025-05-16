@@ -84,5 +84,9 @@ def criar():
     print(dados['nome'])
     return Response(status=204)
 
+@app.get('/digitalTwin')
+def digitalTwin():
+    return render_template('index/digitalTwin.html', titulo='digitalTwin')
+
 if __name__ == '__main__':
     app.run(host=config.host, port=config.port)
