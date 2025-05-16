@@ -36,15 +36,13 @@
 
     <div id="canvasZone"><canvas id="renderCanvas"></canvas></div>
 
-    <!-- 🔘 Botões de Controle de Portas -->
+    <!-- controle portas -->
     <div class="text-center my-4">
         <button class="btn btn-secondary mx-2" onclick="togglePorta(1)">Alternar Porta 1</button>
         <button class="btn btn-secondary mx-2" onclick="togglePorta(2)">Alternar Porta 2</button>
         <button class="btn btn-secondary mx-2" onclick="togglePorta(3)">Alternar Porta 3</button>
     </div>
 
-    <!-- Resto do seu conteúdo, formulários e gráficos continuam iguais -->
-    <!-- ... -->
 
 </div>
 
@@ -77,20 +75,20 @@
         const camera = scene.activeCamera;
         camera.alpha = Math.PI / 2;
 
-        // 🎯 Load modelo base fixo
-        await carregarModelo("SemPorta.glb", scene);
+        // modelo loja
+        await carregarModelo("Loja.glb", scene);
 
-        // 🚪 Porta 1
+        // Porta 1
         portaModelos[1].fechada = await carregarModelo("Porta01Fechada.glb", scene);
         portaModelos[1].aberta = await carregarModelo("Porta01Aberta.glb", scene);
         portaModelos[1].aberta.setEnabled(false);
 
-        // 🚪 Porta 2
+        // Porta 2
         portaModelos[2].fechada = await carregarModelo("Porta02Fechada.glb", scene);
         portaModelos[2].aberta = await carregarModelo("Porta02Aberta.glb", scene);
         portaModelos[2].aberta.setEnabled(false);
 
-        // 🚪 Porta 3
+        // Porta 3
         portaModelos[3].fechada = await carregarModelo("Porta03Fechada.glb", scene);
         portaModelos[3].aberta = await carregarModelo("Porta03Aberta.glb", scene);
         portaModelos[3].aberta.setEnabled(false);
@@ -128,7 +126,6 @@
         });
     }
 
-    // ✅ Garante que Babylon esteja carregado antes de usar
     window.addEventListener("load", init);
 </script>
 
