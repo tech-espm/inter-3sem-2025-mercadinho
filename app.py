@@ -12,9 +12,24 @@ def index():
     hoje = datetime.today().strftime('%Y-%m-%d')
     return render_template('index/index.html', hoje=hoje)
 
+@app.get('/heatmap')
+def heatmap():
+    hoje = datetime.today().strftime('%Y-%m-%d')
+    return render_template('index/heatmap.html', hoje=hoje)
+
+
 @app.get('/sobre')
 def sobre():
     return render_template('index/sobre.html', titulo='Sobre Nós')
+
+@app.get('/getPassagem')
+def getPassagem():
+
+    dataInicial = request.args["dataInicial"]
+    dataFinal = request.args["dataFinal"]
+    dados = banco.listarDados(dataInicial, dataFinal)
+
+    return json.jsonify(dados)
 
 @app.get('/obterDados')
 def obterDados():

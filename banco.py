@@ -84,6 +84,10 @@ def criarPessoa(nome, email):
 # Para mais informações:
 # https://docs.sqlalchemy.org/en/14/tutorial/dbapi_transactions.html
 
+def getPassagem(data):
+	with Session(engine) as sessao, sessao.begin(): #"2025-02%" = formato da data pra mes
+		sessao.execute(text("Select day(Dt_Senf) ,sum(En_SenF) From SensorPassagem where Dt_SenF like data group by day(Dt_SenF)"), data)
+
 def obterIdMaximo(id, tabela):
 	with Session(engine) as sessao:
 		registro = sessao.execute(text(f"SELECT MAX({id}) FROM {tabela}")).first()
@@ -101,17 +105,8 @@ def inserirPassagem(registros):
 def inserirContato(registros):
 	with Session(engine) as sessao, sessao.begin():
 		for registro in registros:
-			if registro["id_sensor"] < 7:
-				if registro["id_sensor"] == 4:
-					geladeira = 2
-					sessao.execute(text(f"INSERT INTO SensorContato (Id_RegC, Dt_SenC, Id_SenC, Tm_SenC, Ab_SenC, Id_Gelad) VALUES (:id, :data, :id_sensor, :delta, :fechado, {geladeira})"), registro)
-				if registro["id_sensor"] == 3:
-					geladeira = 3
-					sessao.execute(text(f"INSERT INTO SensorContato (Id_RegC, Dt_SenC, Id_SenC, Tm_SenC, Ab_SenC, Id_Gelad) VALUES (:id, :data, :id_sensor, :delta, :fechado, {geladeira})"), registro)
-				if registro["id_sensor"] == 5:
-					geladeira = 1
-					sessao.execute(text(f"INSERT INTO SensorContato (Id_RegC, Dt_SenC, Id_SenC, Tm_SenC, Ab_SenC, Id_Gelad) VALUES (:id, :data, :id_sensor, :delta, :fechado, {geladeira})"), registro)
-			
+			sessao.execute(text(f"INSERT INTO SensorContato (Id_RegC, Dt_SenC, Id_SenC, Tm_SenC, Ab_SenC, Id_Gelad) VALUES (:id, :data, :id_sensor, :delta, :fechado, 3)"), registro)
+
 def inserirPresenca(registros):
 	with Session(engine) as sessao, sessao.begin():
 		for registro in registros:
