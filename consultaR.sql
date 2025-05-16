@@ -33,15 +33,13 @@ union all
 union all
 (select id_sensor, ocupado, time_to_sec(timediff(now(), data)) delta_agora from presenca where id_sensor = 7 order by id desc limit 1)
 union all
-(select id_sensor, ocupado, time_to_sec(timediff(now(), data)) delta_agora from presenca where id_sensor = 8 order by id desc limit 1)
-;
+(select id_sensor, ocupado, time_to_sec(timediff(now(), data)) delta_agora from presenca where id_sensor = 8 order by id desc limit 1);
 
 -- Query com a média de presença por dia
 select id_sensor, date(data) dia, avg(delta) presenca_media from presenca
 where data between '2025-03-10 00:00:00' and '2025-03-14 23:59:59' and ocupado = 0
 group by id_sensor, dia
-order by id_sensor, dia
-;
+order by id_sensor, dia;
 
 ------- Nossas
 -- Contagem de visitas na geladeira por smn:
@@ -49,8 +47,7 @@ order by id_sensor, dia
 select id_sensor, date(data) dia, count(ocupado) from presenca
 WHERE data BETWEEN DATE_SUB(NOW(), INTERVAL 7 DAY) AND NOW() and ocupado = 0
 group by id_sensor, dia
-order by id_sensor, dia
-;
+order by id_sensor, dia;
 
 -- Contagem de visitas na geladeira por mes:
 
