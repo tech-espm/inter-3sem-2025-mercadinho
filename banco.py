@@ -112,3 +112,30 @@ def inserirPresenca(registros):
 		for registro in registros:
 			if registro["id_sensor"] < 4:
 				sessao.execute(text("INSERT INTO SensorPresenca (Id_RegP, Dt_SenP, Tm_SenP, Oc_Sens, Id_SenP, Id_Gelad) VALUES (:id, :data, :delta, :ocupado, :id_sensor, :id_sensor)"), registro)
+
+def listarPassagemMensal(data_inicial, data_final):
+	with Session(engine) as sessao:
+		parametros = {
+			'data_inicial': data_inicial + ' 00:00:00',
+			'data_final': data_final + ' 23:59:59'
+		}
+
+		# Mais informações sobre o método execute e sobre o resultado que ele retorna:
+		# https://docs.sqlalchemy.org/en/14/orm/session_api.html#sqlalchemy.orm.Session.execute
+		# https://docs.sqlalchemy.org/en/14/core/connections.html#sqlalchemy.engine.Result
+		registros = sessao.execute(text("""
+		select date_format(Dt_SenF, '%d/%m/%Y') dia, cast(sum(En_SenF) as signed) total_entrada
+		from SensorPassagem
+		where Dt_SenF between :data_inicial and :data_final
+		and Id_SenF = 2 group by dia
+		"""), parametros)
+
+		lista = []
+
+		for (dia, total_entrada) in registros:
+			lista.append({
+				"dia": dia,
+				"total_entrada": total_entrada,
+			})
+
+		return lista

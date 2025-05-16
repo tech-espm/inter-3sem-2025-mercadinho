@@ -1,7 +1,7 @@
 from flask import Flask, render_template, json, request, Response
 import config
 import requests
-from datetime import datetime
+from datetime import datetime, timedelta
 # nessa linha de baixo
 import banco
 
@@ -16,6 +16,12 @@ def index():
 def heatmap():
     hoje = datetime.today().strftime('%Y-%m-%d')
     return render_template('index/heatmap.html', hoje=hoje)
+
+@app.get('/heatmap2')
+def heatmap2():
+    semana_passada = (datetime.today() + timedelta(days=-6)).strftime('%Y-%m-%d')
+    hoje = datetime.today().strftime('%Y-%m-%d')
+    return render_template('index/heatmap2.html', semana_passada=semana_passada, hoje=hoje)
 
 
 @app.get('/sobre')
@@ -75,6 +81,34 @@ def obterDados():
         { 'dia': '18/09', 'valor': 93 },
         { 'dia': '19/09', 'valor': 110 }
     ];
+    return json.jsonify(dados)
+
+@app.get('/obterDadosPassagem')
+def obterDadosPassagem():
+    # Obter o maior id do banco
+    """
+	maior_id = banco.obterIdMaximo("Id_RegF", "SensorPassagem")
+
+    resultado = requests.get(f'{config.url_api}?sensor=passage&id_inferior={maior_id}')
+    dados_novos = resultado.json()
+
+	# Inserir os dados novos no banco
+    if dados_novos and len(dados_novos) > 0:
+        banco.inserirPassagem(dados_novos)
+
+    dataInicial = request.args["dataInicial"]
+    dataFinal = request.args["dataFinal"]
+    dados = banco.listarPassagemMensal(dataInicial, dataFinal)"""
+    dados = [{
+        "dia": "14/05/2025",
+        "total_entrada": 10,
+	},{
+        "dia": "15/05/2025",
+        "total_entrada": 20,
+	},{
+        "dia": "16/05/2025",
+        "total_entrada": 30,
+	}]
     return json.jsonify(dados)
 
 @app.post('/criar')
