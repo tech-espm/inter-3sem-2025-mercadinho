@@ -1,231 +1,186 @@
-{% extends 'layout.html' %} {% block body %}
 
-<div class="fundo-cinza-padding">
-  <div class="container-fluid">
-    <div class="row">
-      <div class="container-fluid fundo-branco-borda-arredondada">
-        <div class="row margin-row-interna">
-          <div class="col-sm-4">
-            <div class="card shadow my-4">
-              <div class="card-body">
-                <form id="form">
-                  <div class="form-group">
-                    <label for="data">Data</label>
-                    <input
-                      id="data"
-                      name="data"
-                      class="form-control"
-                      type="date"
-                      value="{{ hoje }}"
-                    />
-                  </div>
-                  <button type="submit" class="btn btn-primary">Listar</button>
-                </form>
-              </div>
-            </div>
-          </div>
-        </div>
+{% extends 'layout.html' %}
 
-        <div
-          class="row margin-row-interna flex-space-evenly padding-left-right-row-integrantes margin-reduzida-row-integrantes"
-        >
-          <div
-            class="col-lg-3 fundo-cinza-card margin-bottom-card padding-reduzido"
-          >
-            <div class="container-fluid padding-reduzido">
-              <div class="row">
-                <div class="col-7 flex-fotos">
-                  <img
-                    src="/static/img/akemi.jpg"
-                    alt="Foto Julia Mullis"
-                    width="200px"
-                    class="foto-circular"
-                  />
-                </div>
-                <div class="col-5">
-                  <p class="tamanho-fonte-nomes padding-top-nomes">
-                    <b>Julia <br />Mullis</b>
-                  </p>
-                  <p
-                    class="tamanho-fonte-redes padding-top-redes centralizar-img-e-texto"
-                  >
-                    <img
-                      src="/static/svg/linkedin.svg"
-                      alt="Ícone LinkedIn"
-                    /><span class="padding-left-icones-redes"
-                      ><a
-                        href="https://www.linkedin.com/in/akemi-m/"
-                        target="_blank"
-                        class="cor-link-preto"
-                        >LinkedIn</a
-                      ></span
-                    >
-                  </p>
-                  <p class="tamanho-fonte-redes centralizar-img-e-texto">
-                    <img src="/static/svg/github.svg" alt="Ícone GitHub" /><span
-                      class="padding-left-icones-redes"
-                      ><a
-                        href="https://github.com/akemi-m"
-                        target="_blank"
-                        class="cor-link-preto"
-                        >GitHub</a
-                      ></span
-                    >
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div
-            class="col-lg-3 fundo-cinza-card margin-bottom-card padding-reduzido"
-          >
-            <div class="container-fluid padding-reduzido">
-              <div class="row">
-                <div class="col-7 flex-fotos">
-                  <img
-                    src="/static/img/theo.png"
-                    alt="Foto Theo Gaspar"
-                    width="200px"
-                    class="foto-circular"
-                  />
-                </div>
-                <div class="col-5">
-                  <p class="tamanho-fonte-nomes padding-top-nomes">
-                    <b>Theo <br />Gaspar</b>
-                  </p>
-                  <p
-                    class="tamanho-fonte-redes padding-top-redes centralizar-img-e-texto"
-                  >
-                    <img
-                      src="/static/svg/linkedin.svg"
-                      alt="Ícone LinkedIn"
-                    /><span class="padding-left-icones-redes"
-                      ><a
-                        href="https://www.linkedin.com/in/theo-gaspar/"
-                        target="_blank"
-                        class="cor-link-preto"
-                        >LinkedIn</a
-                      ></span
-                    >
-                  </p>
-                  <p class="tamanho-fonte-redes centralizar-img-e-texto">
-                    <img src="/static/svg/github.svg" alt="Ícone GitHub" /><span
-                      class="padding-left-icones-redes"
-                      ><a
-                        href="https://github.com/tigasparzin"
-                        target="_blank"
-                        class="cor-link-preto"
-                        >GitHub</a
-                      ></span
-                    >
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+{% block body %}
+
+<div class="container-fluid">
+
+	<div class="row">
+		<div class="col-sm-6 col-xl-4">
+			<div class="card shadow my-4">
+				<div class="card-body">
+					<h2 class="card-title">Heatmap de Fluxo de Clientes</h2>
+					<p class="card-text">Visualize a quantidade de visitantes por dia em um gráfico de calor.</p>
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-6 col-xl-4">
+			<form class="card shadow my-4" id="form">
+				<div class="card-body">
+					<div class="row">
+						<div class="col-sm-6">
+							<div class="form-group">
+								<label for="data_inicial">Data Inicial</label>
+								<input id="data_inicial" name="data_inicial" class="form-control" type="date" value="{{mes_passado}}" />
+							</div>
+						</div>
+						<div class="col-sm-6">
+							<div class="form-group">
+								<label for="data_final">Data Final</label>
+								<input id="data_final" name="data_final" class="form-control" type="date" value="{{hoje}}" />
+							</div>
+						</div>
+					</div>
+
+					<button type="submit" class="btn btn-primary" onclick="atualizarDados()">Listar</button>
+				</div>
+			</form>
+
+		</div>
+	</div>
+
+	<div class="card shadow my-4">
+		<div class="card-body" id="div-heatmap"></div>
+	</div>
+
 </div>
-<script>
-  async function atualizarDados() {
-    Swal.fire({
-      title: "Carregando...",
-      allowOutsideClick: false,
-      didOpen: () => Swal.showLoading(),
-    });
 
-    try {
-      let dataFinal = document.getElementById("data").value;
-      let dataInicial = new Date(
-        new Date(dataFinal).getTime() - 6 * 24 * 60 * 60 * 1000
-      )
-        .toISOString()
-        .substring(0, 10);
-      let response = await fetch(
-        "/getPassagem?dataInicial=" +
-          encodeURIComponent(dataInicial) +
-          "&dataFinal=" +
-          encodeURIComponent(dataFinal)
-      );
-      console.log(dataFinal);
-      console.log(dataInicial);
+<script type="text/javascript">
 
-      if (response.ok) {
-        Swal.close();
+	"use strict";
 
-        let dados = await response.json();
-        if (!dados || !dados.length) {
-          Swal.fire("Erro", "Sem dados na data especificada!", "error");
-          return;
-        }
+	function relativeLuminance(rgb) {
+		if ((typeof rgb) === "string")
+			rgb = parseInt(rgb.replace("#", ""), 16);
+		rgb |= 0;
+		if (rgb < 0)
+			return 1;
+		//http://www.w3.org/TR/2007/WD-WCAG20-TECHS-20070517/Overview.html#G18
+		var RsRGB = ((rgb >>> 16) & 0xff) / 255.0,
+			GsRGB = ((rgb >>> 8) & 0xff) / 255.0,
+			BsRGB = (rgb & 0xff) / 255.0,
+			R, G, B;
+		if (RsRGB <= 0.03928) R = RsRGB / 12.92; else R = Math.pow((RsRGB + 0.055) / 1.055, 2.4);
+		if (GsRGB <= 0.03928) G = GsRGB / 12.92; else G = Math.pow((GsRGB + 0.055) / 1.055, 2.4);
+		if (BsRGB <= 0.03928) B = BsRGB / 12.92; else B = Math.pow((BsRGB + 0.055) / 1.055, 2.4);
+		return (0.2126 * R) + (0.7152 * G) + (0.0722 * B);
+	}
 
-        let menorRuido = Infinity;
-        let maiorRuido = -Infinity;
-        for (let i = 0; i < dados.length; i++) {
-          if (menorRuido > dados[i].ruido) menorRuido = dados[i].ruido;
-          if (maiorRuido < dados[i].ruido) maiorRuido = dados[i].ruido;
-        }
+	function textColorForBackground(i) {
+		return (relativeLuminance(i) < 0.4) ? "#ffffff" : "#000000";
+	}
 
-        let delta = maiorRuido - menorRuido;
-        for (let i = 0; i < dados.length; i++) {
-          dados[i].ruido_normalizado =
-            (100 * (dados[i].ruido - menorRuido)) / delta;
-        }
+	function coresHeatmap(perc) {
+		const r0 = 0xE6; // 230 → lavanda (início)
+		const g0 = 0xE6; // 230
+		const b0 = 0xFA; // 250
+		const r1 = 0x80; // 128 → roxo (fim)
+		const g1 = 0x00; //   0
+		const b1 = 0x80; // 128
+		let r = Math.max(0, Math.min(255, ((perc * r1) + ((1 - perc) * r0)) | 0)).toString(16);
+		let g = Math.max(0, Math.min(255, ((perc * g1) + ((1 - perc) * g0)) | 0)).toString(16);
+		let b = Math.max(0, Math.min(255, ((perc * b1) + ((1 - perc) * b0)) | 0)).toString(16);
+		if (r.length < 2) r = "0" + r;
+		if (g.length < 2) g = "0" + g;
+		if (b.length < 2) b = "0" + b;
+		const corFundo = "#" + r + g + b;
+		const corTexto = textColorForBackground(corFundo);
+		return `background-color: ${corFundo}; color: ${corTexto};`;
+	}
 
-        let dias = [];
-        let ultimoDia = null;
-        for (let i = 0; i < dados.length; i++) {
-          if (ultimoDia !== dados[i].dia) {
-            ultimoDia = dados[i].dia;
-            dias.push(ultimoDia);
-          }
-        }
+	function gerarHeatmap(consolidado) {
+		const colunas = ["Segunda-Feira", "Terça-Feira", "Quarta-Feira", "Quinta-Feira", "Sexta-Feira", "Sábado","Domigo"];
 
-        //TABELA
-        let html = [
-          `<table class="table table-bordered"><thead><tr><th>Hora</th>`,
-        ];
-        for (let d = 0; d < dias.length; d++) {
-          html.push(`<th>${dias[d]}</th>`);
-        }
-        html.push(`
-                    </tr>
-                    </thead>
-                    <tbody>
-                `);
+		let html = [`<table class="table table-bordered table-sm w-50 mx-auto" style="height: auto; line-height: 1.2;"><thead><tr>`];
+		for (let i = 0; i < colunas.length; i++) {
+			html.push(`<th>${colunas[i]}</th>`);
+		}
 
-        for (let h = 0; h <= 23; h++) {
-          html.push(`<tr><td>${h}:00</td>`);
-          for (let d = 0; d < dias.length; d++) {
-            let ruido = 0;
-            for (let i = 0; i < dados.length; i++) {
-              if (dados[i].dia === dias[d] && dados[i].hora === h) {
-                ruido = dados[i].ruido_normalizado;
-                break;
-              }
-            }
-            html.push(
-              `<td style="background-color:rgba(113, 74, 152, ${
-                ruido / 100
-              });">${ruido.toFixed(1)}</td>`
-            );
-          }
-          html.push(`</tr>`);
-        }
-        html.push(`</tbody></table>`);
-        document.getElementById("div-grafico").innerHTML = html.join("");
-      } else {
-        const erro = await response.text();
-        Swal.fire("Erro", erro, "error");
-      }
-    } catch (ex) {
-      Swal.fire("Erro", "Erro ao listar os dados: " + ex.message, "error");
-    }
-  }
+		html.push(`
+			</tr>
+			</thead>
+			<tbody>
+		`);
 
-  atualizarDados();
+		let maior = consolidado[0].total_entrada;
+
+		for (let i = 0; i < consolidado.length; i++) {
+			let dado = parseInt(consolidado[i].total_entrada)
+			if (maior < dado){
+				maior = dado;
+			}
+		}
+
+		let cmc = consolidado[0].diaSmn;
+		let aux_c = 0;
+		if(cmc){
+			html.push(`<tr>`);
+			for(let i = 0; i < cmc; i++){
+				html.push(`<td> <p> Fora do periodo </p><p> especificado</p> </td>`);
+			}
+			for(let i = 0; i < 7 - cmc; i++) {
+				const dado = consolidado[i];
+				aux_c++;
+				let n = dado.total_entrada/maior;
+				html.push(`<td style="${coresHeatmap(n)}"> <p > ${dado.dia} </p><p >${dado.total_entrada}</p></td>`);
+			}
+			html.push(`</tr>`);
+		}
+
+		for (let i = 0+aux_c; i < consolidado.length; i++) {
+			const dado = consolidado[i];
+			if (dado.diaSmn == 0) {
+				html.push(`<tr>`);
+			}
+				let n = dado.total_entrada/maior;
+				html.push(`<td style="${coresHeatmap(n)}"> <p > ${dado.dia} </p><p >${dado.total_entrada}</p></td>`);
+
+			if (dado.diaSmn == 6) {
+				html.push(`</tr>`);
+			}
+		}
+
+		html.push(`</tbody></table>`);
+		document.getElementById("div-heatmap").innerHTML = html.join('');
+	}
+
+	$("#form").validate({
+		rules: {
+			data_inicial: { required: true },
+			data_final: { required: true }
+		},
+		submitHandler: function () {
+			atualizarDados();
+		}
+	});
+
+	async function atualizarDados() {
+		waitSwal();
+
+		try {
+			let data_inicial = document.getElementById("data_inicial").value;
+			let data_final = document.getElementById("data_final").value;
+			let response = await fetch(`/obterDadosPassagem?data_inicial=${data_inicial}&data_final=${data_final}`);
+
+			if (response.ok) {
+				Swal.close();
+
+				let consolidado = await response.json();
+				if (!consolidado || !consolidado.length) {
+					Swal.fire("Erro", "Sem dados no período especificado!", "error");
+					return;
+				}
+
+				gerarHeatmap(consolidado);
+			} else {
+				await exibirErro(response);
+			}
+		} catch (ex) {
+			Swal.fire("Erro", "Erro ao listar os dados: " + ex.message, "error");
+		}
+	}
+
+	atualizarDados();
 </script>
 
 {% endblock %}

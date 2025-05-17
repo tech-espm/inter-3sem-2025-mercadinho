@@ -211,3 +211,18 @@ body {
 	display: flex;
 	align-items: center;
 }
+
+td, th{
+	max-width: 120px;
+}
+
+th{
+	max-width: 120px;
+	text-align: center;
+}
+
+td p{
+	margin: 5px 5px;
+	text-align: center;
+	max-width: 100px;
+}

@@ -124,18 +124,21 @@ def listarPassagemMensal(data_inicial, data_final):
 		# https://docs.sqlalchemy.org/en/14/orm/session_api.html#sqlalchemy.orm.Session.execute
 		# https://docs.sqlalchemy.org/en/14/core/connections.html#sqlalchemy.engine.Result
 		registros = sessao.execute(text("""
-		select date_format(Dt_SenF, '%d/%m/%Y') dia, cast(sum(En_SenF) as signed) total_entrada
-		from SensorPassagem
-		where Dt_SenF between :data_inicial and :data_final
-		and Id_SenF = 2 group by dia
+		Select date_format(dia, '%d/%m/%Y') as dia, visitantes as total_entrada, weekday(dia) as diaSmn
+		from (Select concat(date_format(Dt_SenF, '%Y/%m/%d'), " 00:00:00") as dia ,sum(En_SenF) as visitantes
+			from SensorPassagem 
+			where Dt_SenF 
+			between :data_inicial and :data_final 
+			group by dia) as meioTermoPassagem
 		"""), parametros)
 
 		lista = []
 
-		for (dia, total_entrada) in registros:
+		for (dia, total_entrada, diaSmn) in registros:
 			lista.append({
 				"dia": dia,
 				"total_entrada": total_entrada,
+				"diaSmn": diaSmn
 			})
 
 		return lista
