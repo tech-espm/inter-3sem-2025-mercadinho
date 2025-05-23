@@ -47,7 +47,7 @@ WHERE date(Dt_SenF) = date(NOW()) and Id_SenF = 2
 group by Id_SenF, hora
 order by Id_SenF, hora;
 
--- Fluxo por hr de hj:
+-- Fluxo por hr de smn:
 
 select Id_SenF, hour(Dt_SenF) hora, sum(En_SenF) from sensorpassagem
 WHERE Dt_SenF BETWEEN DATE_SUB(NOW(), INTERVAL 7 DAY) AND NOW() and Id_SenF = 2

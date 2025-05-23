@@ -9,9 +9,21 @@
 ### 2025-01
 
 ## Integrantes
-- [Nome](https://github.com/xxx)
+- [Alexandre Martinelli](https://github.com/alexandremartinelli11/)
+- [Gabriel Cardoso Campos Rodrigues](https://github.com/gabrielccr-555)
+- [Hugo Coscelli Ferraz](https://github.com/z-hugo-ferraz/)
+- [Julia Akemi Mullis](https://github.com/akemi-m/)
+- [Theo Camuri Gaspar](https://github.com/tigasparzin/)
 
 ## Descrição do Projeto
+
+O Mercadinho busca proporcionar uma ferramenta de análise do comportamento do consumidor em pontos de venda que possuam freezers e geladeiras, através da coleta de dados de presença, contagem de pessoas, e abertura e fechamento de portas por sensores da Absolut Technologies e posterior exibição, por meio de visualizações em dashboards e modelagem 3D. 
+
+## Funcionalidades
+
+- Mapeamento 3D, com digital twin atualizado em tempo real;
+- Geração e exportação de relatórios para Microsoft Excel;
+- Exibição de dashboards com KPIs de tempo médio de avaliação de alternativas na decisão de compra, horários de maior fluxo de clientes, freezers mais visitados e cálculo do número médio de clientes na loja por período.
 
 ## Configuração do Projeto
 
@@ -20,8 +32,8 @@ Para executar, deve criar o arquivo `config.py` da seguinte forma:
 ```python
 host = '0.0.0.0'
 port = 3000
-conexao_banco = 'mysql+mysqlconnector://usuario:senha@host/banco'
-url_api = 'https://site.com'
+conexao_banco = 'mysql+mysqlconnector://usuario:senha@host/mercadinho'
+url_api = 'https://iagen.espm.br/sensores/dados'
 ```
 
 Todos os comandos abaixo assumem que o terminal esteja com o diretório atual na raiz do projeto.
