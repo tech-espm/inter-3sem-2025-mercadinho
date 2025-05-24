@@ -142,3 +142,27 @@ def listarPassagemMensal(data_inicial, data_final):
 			})
 
 		return lista
+	
+def obterFluxoPorHora(data_inicial=None, data_final=None):
+	with Session(engine) as sessao:
+		parametros = {}
+		sql = "select date_format(Dt_SenF, '%H:00') as hora, sum(En_SenF) as total_entradas, sum(Sd_SenF) as total_saidas from SensorPassagem"
+
+		if data_inicial and data_final:
+			sql += " where Dt_SenF between :data_inicial and :data_final"
+			parametros["data_inicial"] = data_inicial + " 00:00:00"
+			parametros["data_final"] = data_final + " 23:59:59"
+
+		sql += " group by hora order by hora"
+
+		registros = sessao.execute(text(sql), parametros)
+		resultado = []
+
+		for hora, entradas, saidas in registros:
+			resultado.append({
+				"hora": hora,
+				"entradas": entradas,
+				"saidas": saidas
+			})
+
+		return resultado

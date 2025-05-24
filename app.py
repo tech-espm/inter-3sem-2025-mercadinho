@@ -98,5 +98,24 @@ def criar():
 def digitalTwin():
     return render_template('index/digitalTwin.html', titulo='digitalTwin')
 
+@app.get('/linha')
+def linha():
+    mes_passado = (datetime.today() + timedelta(days=-30)).strftime('%Y-%m-%d')
+    hoje = datetime.today().strftime('%Y-%m-%d')
+    return render_template('index/linha.html', titulo='Gráfico de Linha', mes_passado=mes_passado, hoje=hoje)
+
+@app.get('/obterFluxoHora')
+def obterFluxoHora():
+    data_inicial = request.args.get('data_inicial')
+    data_final = request.args.get('data_final')
+
+    if data_inicial and data_final:
+        dados = banco.obterFluxoPorHora(data_inicial, data_final)
+    else:
+        dados = banco.obterFluxoPorHora()
+
+    return json.jsonify(dados)
+
 if __name__ == '__main__':
     app.run(host=config.host, port=config.port)
+
