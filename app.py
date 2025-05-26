@@ -5,27 +5,30 @@ from datetime import datetime, timedelta
 # nessa linha de baixo
 import banco
 
+# Endpoint que possibilita os verbos
 app = Flask(__name__)
 
+# Caminho para a home page
 @app.get('/')
 def index():
     hoje = datetime.today().strftime('%Y-%m-%d')
     return render_template('index/index.html', hoje=hoje)
 
-
+# Caminho para a página contendo o heatmap
 @app.get('/heatmap')
-def heatmap2():
+def heatmap():
     mes_passado = (datetime.today() + timedelta(days=-30)).strftime('%Y-%m-%d')
     hoje = datetime.today().strftime('%Y-%m-%d')
     return render_template('index/heatmap.html', mes_passado=mes_passado, hoje=hoje)
 
-
+# Caminho para a página sobre nós
 @app.get('/sobre')
 def sobre():
     return render_template('index/sobre.html', titulo='Sobre Nós')
 
-@app.get('/obterDados')
-def obterDados():
+# Atualiza o banco de dados
+@app.get('/atualizarBanco')
+def atualizarBanco():
     # Obter o maior id do banco
     maior_id = banco.obterIdMaximo('Id_RegF', 'SensorPassagem')
 
@@ -70,8 +73,21 @@ def obterDados():
     ];
     return json.jsonify(dados)
 
-@app.get('/obterDadosPassagem')
-def obterDadosPassagem():
+# Caminho para a página do digital twin
+@app.get('/digitalTwin')
+def digitalTwin():
+    return render_template('index/digitalTwin.html', titulo='digitalTwin')
+
+# Caminho para o gráfico de linha (Fluxo de passagem x Hora)
+@app.get('/linha')
+def linha():
+    mes_passado = (datetime.today() + timedelta(days=-30)).strftime('%Y-%m-%d')
+    hoje = datetime.today().strftime('%Y-%m-%d')
+    return render_template('index/linha.html', titulo='Gráfico de Linha', mes_passado=mes_passado, hoje=hoje)
+
+# Função responsável por popular o heatmap
+@app.get('/obterDadosHeatmap')
+def obterDadosHeatmap():
     # Obter o maior id do banco
     maior_id = banco.obterIdMaximo("Id_RegF", "SensorPassagem")
     
@@ -87,23 +103,14 @@ def obterDadosPassagem():
     dados = banco.listarPassagemMensal(dataInicial, dataFinal)
     return json.jsonify(dados)
 
-@app.post('/criar')
-def criar():
-    dados = request.json
-    print(dados['id'])
-    print(dados['nome'])
-    return Response(status=204)
+# @app.post('/criar')
+# def criar():
+#     dados = request.json
+#     print(dados['id'])
+#     print(dados['nome'])
+#     return Response(status=204)
 
-@app.get('/digitalTwin')
-def digitalTwin():
-    return render_template('index/digitalTwin.html', titulo='digitalTwin')
-
-@app.get('/linha')
-def linha():
-    mes_passado = (datetime.today() + timedelta(days=-30)).strftime('%Y-%m-%d')
-    hoje = datetime.today().strftime('%Y-%m-%d')
-    return render_template('index/linha.html', titulo='Gráfico de Linha', mes_passado=mes_passado, hoje=hoje)
-
+# Função para popular o gráfico de linha
 @app.get('/obterFluxoHora')
 def obterFluxoHora():
     data_inicial = request.args.get('data_inicial')
@@ -115,6 +122,20 @@ def obterFluxoHora():
         dados = banco.obterFluxoPorHora()
 
     return json.jsonify(dados)
+
+@app.get('/obterMediaDecisao')
+def obterMedia():
+    data_inicial = request.args.get('data_inicial')
+    data_final = request.args.get('data_final')
+
+    if data_inicial and data_final:
+        dados = banco.obterMediaDecisao(data_inicial,data_final)
+    else:
+        dados = banco.obterMediaDecisao()
+        print(dados)
+
+    return json.jsonify(dados)
+
 
 if __name__ == '__main__':
     app.run(host=config.host, port=config.port)
