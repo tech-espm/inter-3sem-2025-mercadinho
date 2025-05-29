@@ -103,13 +103,6 @@ def obterDadosHeatmap():
     dados = banco.listarPassagemMensal(dataInicial, dataFinal)
     return json.jsonify(dados)
 
-# @app.post('/criar')
-# def criar():
-#     dados = request.json
-#     print(dados['id'])
-#     print(dados['nome'])
-#     return Response(status=204)
-
 # Função para popular o gráfico de linha
 @app.get('/obterFluxoHora')
 def obterFluxoHora():
@@ -136,7 +129,25 @@ def obterMedia():
 
     return json.jsonify(dados)
 
+# Caminho para o gráfico de barras
+@app.get('/barras')
+def barras():
+    mes_passado = (datetime.today() + timedelta(days=-30)).strftime('%Y-%m-%d')
+    hoje = datetime.today().strftime('%Y-%m-%d')
+    return render_template('index/barras.html', titulo='Gráfico de Barras', mes_passado=mes_passado, hoje=hoje)
+
+# Função para popular o gráfico de barras
+@app.get('/obterTaxaAtratividade')
+def obterTaxaAtratividade():
+    data_inicial = request.args.get('data_inicial')
+    data_final = request.args.get('data_final')
+
+    if data_inicial and data_final:
+        dados = banco.obterTaxaAtratividade(data_inicial, data_final)
+    else:
+        dados = banco.obterTaxaAtratividade()
+
+    return json.jsonify(dados)
 
 if __name__ == '__main__':
     app.run(host=config.host, port=config.port)
-

@@ -190,4 +190,25 @@ def obterMediaDecisao(data_inicial=None, data_final=None):
 
 		return registro
 
+# Função que extrai os dados do banco para obter a taxa de atratividade 
+def obterTaxaAtratividade(data_inicial=None, data_final=None):
+	with Session(engine) as sessao:
+		parametros = {}
+		sql = "select Id_Gelad, count(*) as total_visitas from sensorpresenca where Oc_Sens = 1"
+		if data_inicial and data_final:
+			sql += " and Dt_SenP between :data_inicial and :data_final"
+			parametros["data_inicial"] = data_inicial + " 00:00:00"
+			parametros["data_final"] = data_final + " 23:59:59"
 		
+		sql += " group by Id_Gelad order by total_visitas desc"
+		
+		registro = sessao.execute(text(sql), parametros)
+
+		resultado = []
+		for Id_Gelad, total_visitas in registro:
+			resultado.append({
+				"Id_Gelad": Id_Gelad,
+				"total_visitas": total_visitas
+			})
+		
+		return resultado	
