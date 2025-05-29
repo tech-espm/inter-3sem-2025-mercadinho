@@ -215,4 +215,19 @@ def obterTaxaAtratividade(data_inicial=None, data_final=None):
 				"total_visitas": total_visitas
 			})
 		
-		return resultado	
+		return resultado
+
+
+#TODO: perguntar pro rafa de como atualizar o contador de forma constante
+
+def obterFluxoAtual():
+	with Session(engine) as sessao:
+		fluxo_atual = sessao.execute(text("""
+		SELECT SUM(En_SenF) - SUM(Sd_SenF) AS clientes
+			FROM SensorPassagem
+			WHERE date_format(Dt_SenF, '%Y/%d/%d') = date_format(current_date(), '%Y/%d/%d');
+		"""))
+	resultado=[]
+	for i in fluxo_atual:
+		resultado.append(i)
+	return resultado

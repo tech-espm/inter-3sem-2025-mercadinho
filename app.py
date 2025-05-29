@@ -158,5 +158,16 @@ def obterTaxaAtratividade():
 
     return json.jsonify(dados)
 
+#Função para popular o KPI de clientes presentes na loja 
+@app.get('/obterFluxoAtual')
+def obterFluxo():
+    clientestuais = banco.obterFluxoAtual()
+    return json.jsonify(clientestuais[0][0])
+
+#Caminho para a página que tem os clientes atuais na loja
+@app.get('/atualClientes')
+def atualClientes():
+    return render_template('index/clientesAtuais.html', titulo='clientesAtuais')
+
 if __name__ == '__main__':
     app.run(host=config.host, port=config.port)
