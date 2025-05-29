@@ -177,18 +177,22 @@ def obterFluxoPorHora(data_inicial=None, data_final=None):
 def obterMediaDecisao(data_inicial=None, data_final=None):
 	with Session(engine) as sessao:
 		parametros = {}
-		sql = " select avg(delta) from (select avg(Tm_SenP) as delta,  date_format(Dt_SenP, '%Y/%m/%d %H:%i') as Dia from sensorpresenca where date_format(Dt_SenP, '%Y/%m/%d %H:%i') in (select date_format(Dt_SenC, '%Y/%m/%d %H:%i') from sensorcontato "
+		sql = "select avg(delta) from (select avg(Tm_SenP) as delta,  date_format(Dt_SenP, '%Y/%m/%d %H:%i') as Dia from sensorpresenca where date_format(Dt_SenP, '%Y/%m/%d %H:%i') in (select date_format(Dt_SenC, '%Y/%m/%d %H:%i') from sensorcontato "
 		if data_inicial and data_final:
-			sql += """where Ab_SenC = 1 and Dt_SenC between ":data_inicial" and ":data_final")	group by date_format(Dt_SenP, '%Y/%m/%d %H:%i')) as n;"""
-			parametros["data_inicial"] = data_inicial + "00:00:00"
-			parametros["data_final"] = data_final + "23:59:59"
+			sql += """where Ab_SenC = 1 and Dt_SenC between :data_inicial and :data_final )	group by date_format(Dt_SenP, '%Y/%m/%d %H:%i')) as n;"""
+			parametros["data_inicial"] = data_inicial
+			parametros["data_final"] = data_final 
 		
 		else:
 			sql += """where Ab_SenC = 1) group by date_format(Dt_SenP, '%Y/%m/%d %H:%i')) as n;"""
 		
 		registro = sessao.execute(text(sql), parametros)
+		resultado = []
 
-		return registro
+		for i in registro:
+			resultado.append(i)
+
+		return resultado
 
 # Função que extrai os dados do banco para obter a taxa de atratividade 
 def obterTaxaAtratividade(data_inicial=None, data_final=None):

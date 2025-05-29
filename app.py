@@ -1,4 +1,4 @@
-from flask import Flask, render_template, json, request, Response
+from flask import Flask, render_template, json, request, Response, jsonify
 import config
 import requests
 from datetime import datetime, timedelta
@@ -116,6 +116,14 @@ def obterFluxoHora():
 
     return json.jsonify(dados)
 
+# Caminho para a página que tem o tempo médio de decisão de compra
+@app.get('/decisao')
+def decisao():
+    data_inicial = (datetime.today() + timedelta(days=-30)).strftime('%Y-%m-%d')
+    data_final = datetime.today().strftime('%Y-%m-%d')
+    return render_template('index/decisao.html', titulo='Grandes Numeros', data_inicial=data_inicial, data_final=data_final)
+
+# Função para obter o tempo médio de decisão de compra
 @app.get('/obterMediaDecisao')
 def obterMedia():
     data_inicial = request.args.get('data_inicial')
@@ -125,9 +133,10 @@ def obterMedia():
         dados = banco.obterMediaDecisao(data_inicial,data_final)
     else:
         dados = banco.obterMediaDecisao()
-        print(dados)
+        print(dados[0][0])
 
-    return json.jsonify(dados)
+    return jsonify(dados[0][0] // 60)
+
 
 # Caminho para o gráfico de barras
 @app.get('/barras')
