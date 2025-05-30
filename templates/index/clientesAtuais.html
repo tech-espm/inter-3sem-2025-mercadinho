@@ -34,7 +34,7 @@
     });
 
     async function atualizarDados() {
-      waitSwal();
+      //waitSwal();
 
       try {
 
@@ -53,6 +53,9 @@
         const e = document.getElementById("resultado");
         
         e.innerHTML = `Resultado: ${JSON.stringify(dados)} clientes `;
+
+        setTimeout(atualizarDados, 1000);
+
         
       } catch (ex) {
         Swal.fire("Erro", "Erro ao carregar o gráfico: " + ex.message, "error");
