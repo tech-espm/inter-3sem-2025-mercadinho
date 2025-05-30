@@ -96,6 +96,18 @@
         portaModelos[3].fechada = await carregarModelo("Porta03Fechada.glb", scene);
         portaModelos[3].aberta = await carregarModelo("Porta03Aberta.glb", scene);
         portaModelos[3].aberta.setEnabled(false);
+
+        // Pessoa 1
+        pessoaModelos[1].presente = await carregarModelo("Pessoa01.glb", scene);
+        pessoaModelos[1].presente.setEnabled(false);
+
+        // Pessoa 2
+        pessoaModelos[2].presente = await carregarModelo("Pessoa02.glb", scene);
+        pessoaModelos[2].presente.setEnabled(false);
+
+        // Pessoa 2
+        pessoaModelos[3].presente = await carregarModelo("Pessoa03.glb", scene);
+        pessoaModelos[3].presente.setEnabled(false);
     }
 
     function togglePorta(index) {
@@ -105,6 +117,14 @@
         porta.abertaAtiva = !porta.abertaAtiva;
         porta.aberta.setEnabled(porta.abertaAtiva);
         porta.fechada.setEnabled(!porta.abertaAtiva);
+    }
+
+    function togglePessoa(index){
+        const pessoa = pessoaModelos[index];
+        if (!pessoa.presente) return;
+
+        pessoa.presente = !pessoa.presente;
+        pessoa.presente.setEnable(pessoa.presente);
     }
 
     async function init() {
