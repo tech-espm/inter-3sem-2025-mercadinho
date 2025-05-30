@@ -73,7 +73,11 @@
 
         scene.createDefaultCameraOrLight(true, true, true);
         const camera = scene.activeCamera;
-        camera.alpha = Math.PI / 2;
+        //camera.alpha = Math.PI / 2;
+        camera.alpha = 5.315714326451141;
+        camera.beta = 1.188337079465186;
+        camera.radius = 6.99621204442228;
+        camera.target.x = -1;
 
         // modelo loja
         await carregarModelo("Loja.glb", scene);
@@ -124,6 +128,14 @@
                 scene.render();
             }
         });
+
+        atualizarPortas();
+    }
+
+    async function atualizarPortas() {
+        // @@@ await fetch(...)
+
+        setTimeout(atualizarPortas, 1000);
     }
 
     window.addEventListener("load", init);
