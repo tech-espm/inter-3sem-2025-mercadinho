@@ -41,6 +41,9 @@
         <button class="btn btn-secondary mx-2" onclick="togglePorta(1)">Alternar Porta 1</button>
         <button class="btn btn-secondary mx-2" onclick="togglePorta(2)">Alternar Porta 2</button>
         <button class="btn btn-secondary mx-2" onclick="togglePorta(3)">Alternar Porta 3</button>
+        <button class="btn btn-secondary mx-2" onclick="togglePessoa(3)">Alternar cliente 3</button>
+
+
     </div>
 
 
@@ -58,6 +61,12 @@
         1: { aberta: null, fechada: null, abertaAtiva: false },
         2: { aberta: null, fechada: null, abertaAtiva: false },
         3: { aberta: null, fechada: null, abertaAtiva: false },
+    };
+
+    let pessoaModelos = {
+        1: {presente: false},
+        2: {presente: false},
+        3: {presente: false},
     };
 
     async function carregarModelo(path, scene) {
@@ -79,6 +88,16 @@
         camera.radius = 6.99621204442228;
         camera.target.x = -1;
 
+        // criacao da luz (vector 3 = posicao)
+        const luz = new BABYLON.HemisphericLight("hemiLight", new BABYLON.Vector3(0, 1, 0), scene); 
+        luz.intensity = 0.9;
+        luz.diffuse = new BABYLON.Color3(1, 1, 1); // cor da luz
+
+        //fundo
+        scene.clearColor = new BABYLON.Color4(); 
+        scene.clearColor = BABYLON.Color4.FromHexString("#87CEEB");
+
+
         // modelo loja
         await carregarModelo("Loja.glb", scene);
 
@@ -98,15 +117,15 @@
         portaModelos[3].aberta.setEnabled(false);
 
         // Pessoa 1
-        pessoaModelos[1].presente = await carregarModelo("Pessoa01.glb", scene);
+        pessoaModelos[1].presente = await carregarModelo("cliente01.glb", scene);
         pessoaModelos[1].presente.setEnabled(false);
 
         // Pessoa 2
-        pessoaModelos[2].presente = await carregarModelo("Pessoa02.glb", scene);
+        pessoaModelos[2].presente = await carregarModelo("cliente02.glb", scene);
         pessoaModelos[2].presente.setEnabled(false);
 
         // Pessoa 2
-        pessoaModelos[3].presente = await carregarModelo("Pessoa03.glb", scene);
+        pessoaModelos[3].presente = await carregarModelo("cliente03.glb", scene);
         pessoaModelos[3].presente.setEnabled(false);
     }
 
@@ -119,12 +138,12 @@
         porta.fechada.setEnabled(!porta.abertaAtiva);
     }
 
-    function togglePessoa(index){
+    function togglePessoa(index) {
         const pessoa = pessoaModelos[index];
         if (!pessoa.presente) return;
 
-        pessoa.presente = !pessoa.presente;
-        pessoa.presente.setEnable(pessoa.presente);
+        const visivel = pessoa.presente.isEnabled();
+        pessoa.presente.setEnabled(!visivel);
     }
 
     async function init() {
