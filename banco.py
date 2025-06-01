@@ -129,7 +129,7 @@ def listarPassagemMensal(data_inicial, data_final):
 		# https://docs.sqlalchemy.org/en/14/orm/session_api.html#sqlalchemy.orm.Session.execute
 		# https://docs.sqlalchemy.org/en/14/core/connections.html#sqlalchemy.engine.Result
 		registros = sessao.execute(text("""
-		Select date_format(dia, '%d/%m/%Y') as dia, visitantes as total_entrada, weekday(dia) as diaSmn
+		Select date_format(dia, '%d/%m') as dia, visitantes as total_entrada, weekday(dia) as diaSmn
 		from (Select concat(date_format(Dt_SenF, '%Y/%m/%d'), " 00:00:00") as dia ,sum(En_SenF) as visitantes
 			from SensorPassagem 
 			where Dt_SenF 
