@@ -218,8 +218,7 @@ def obterTaxaAtratividade(data_inicial=None, data_final=None):
 		return resultado
 
 
-#TODO: perguntar pro rafa de como atualizar o contador de forma constante
-
+# Função para devolver a quantidade de clientes na loja no momento
 def obterFluxoAtual():
 	with Session(engine) as sessao:
 		fluxo_atual = sessao.execute(text("""
@@ -232,11 +231,12 @@ def obterFluxoAtual():
 		resultado.append(i)
 	return resultado
 
+# Função para verificar a existencia de cliente na frente da geladeira e se esta está aberta ou fechada
 def atualizalarPinguins():
 	with Session(engine) as sessao:
 		p = sessao.execute(text("""select 
-(select c.Ab_SenC from sensorcontato c where c.Id_SenC = 3 order by c.Id_RegC desc limit 1) aberto,
-(select p.Oc_Sens from sensorpresenca p where p.Id_SenP = 3 order by p.Id_RegP desc limit 1) presente"""))
+			(select c.Ab_SenC from sensorcontato c where c.Id_SenC = 3 order by c.Id_RegC desc limit 1) aberto,
+			(select p.Oc_Sens from sensorpresenca p where p.Id_SenP = 3 order by p.Id_RegP desc limit 1) presente"""))
 
 		pinguin = []
 
@@ -246,5 +246,4 @@ def atualizalarPinguins():
 				"Presente": i[1]
 				    })
 		
-		print(pinguin[0]["Presente"])
 		return pinguin

@@ -63,7 +63,9 @@
         3: { aberta: null, fechada: null, abertaAtiva: false },
     };
     let pessoaModelos = {
-        1: {presente: 0}
+        1: {presente: 0},
+        2: {presente: 0},
+        3: {presente: 0}
     }
 
     async function carregarModelo(path, scene) {
@@ -85,8 +87,22 @@
         camera.radius = 6.99621204442228;
         camera.target.x = -1;
 
+        
+        // criacao da luz (vector 3 = posicao)
+        const luz = new BABYLON.HemisphericLight("hemiLight", new BABYLON.Vector3(0, 1, 0), scene); 
+        luz.intensity = 0.9;
+        luz.diffuse = new BABYLON.Color3(1, 1, 1); // cor da luz
+
+        //fundo
+        scene.clearColor = new BABYLON.Color4(); 
+        scene.clearColor = BABYLON.Color4.FromHexString("#87CEEB");
+
+
+
         // modelo loja
         await carregarModelo("Loja.glb", scene);
+
+        
 
         // Porta 1
         portaModelos[1].fechada = await carregarModelo("Porta01Fechada.glb", scene);
@@ -104,24 +120,17 @@
         portaModelos[3].aberta.setEnabled(false);
 
 
-
-        //TIRAR ISSO DPS!!!!
         // Pessoa 1
-        pessoaModelos[1].presente = await carregarModelo("Porta02Aberta.glb", scene);
-        pessoaModelos[1].presente.setEnabled(false);
-
-/*
-        // Pessoa 1
-        pessoaModelos[1].presente = await carregarModelo("Pessoa01.glb", scene);
+        pessoaModelos[1].presente = await carregarModelo("Cliente01.glb", scene);
         pessoaModelos[1].presente.setEnabled(false);
 
         // Pessoa 2
-        pessoaModelos[2].presente = await carregarModelo("Pessoa02.glb", scene);
+        pessoaModelos[2].presente = await carregarModelo("Cliente02.glb", scene);
         pessoaModelos[2].presente.setEnabled(false);
 
         // Pessoa 2
-        pessoaModelos[3].presente = await carregarModelo("Pessoa03.glb", scene);
-        pessoaModelos[3].presente.setEnabled(false); */
+        pessoaModelos[3].presente = await carregarModelo("Cliente03.glb", scene);
+        pessoaModelos[3].presente.setEnabled(false); 
     }
 
     function togglePorta(index, a) {
@@ -141,11 +150,8 @@
         const pessoa = pessoaModelos[index];
         if (!pessoa.presente) return;
 
-        if (presenca == 1){
-            pessoa.presente.setEnable(pessoa.presente);
-        } else if (presenca == 0){
-            pessoa.presente.setEnable(!pessoa.presente)
-        }
+        const visivel = pessoa.presente.isEnabled();
+        pessoa.presente.setEnabled(!visivel);
     }
 
     async function init() {

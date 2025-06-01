@@ -2,7 +2,6 @@ from flask import Flask, render_template, json, request, Response, jsonify
 import config
 import requests
 from datetime import datetime, timedelta
-# nessa linha de baixo
 import banco
 
 # Endpoint que possibilita os verbos
@@ -58,7 +57,6 @@ def atualizarBanco():
         banco.inserirPresenca(presenca)
     
 	# Trazer os dados do banco
-
     dados = [
         { 'dia': '10/09', 'valor': 80 },
         { 'dia': '11/09', 'valor': 92 },
@@ -158,24 +156,25 @@ def obterTaxaAtratividade():
 
     return json.jsonify(dados)
 
-#Função para popular o KPI de clientes presentes na loja 
+# Função para popular o KPI de clientes presentes na loja 
 @app.get('/obterFluxoAtual')
 def obterFluxo():
     clientestuais = banco.obterFluxoAtual()
     return json.jsonify(clientestuais[0][0])
 
-#Caminho para a página que tem os clientes atuais na loja
+# Caminho para a página que tem os clientes atuais na loja
 @app.get('/atualClientes')
 def atualClientes():
     return render_template('index/clientesAtuais.html', titulo='clientesAtuais')
 
-
+# Caminho para a página que tem o dashboard
 @app.get('/dash')
 def dash():
     mes_passado = (datetime.today() + timedelta(days=-30)).strftime('%Y-%m-%d')
     hoje = datetime.today().strftime('%Y-%m-%d')
     return render_template('index/dashboard.html', titulo='Dashboard', mes_passado=mes_passado, hoje=hoje)
 
+# Função para verificar a existencia de cliente na frente da geladeira e se esta está aberta ou fechada
 @app.get('/atualizaPinguin')
 def atualizaPinguin():
     pinguin = banco.atualizalarPinguins()
