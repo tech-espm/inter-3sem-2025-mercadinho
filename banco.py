@@ -231,3 +231,20 @@ def obterFluxoAtual():
 	for i in fluxo_atual:
 		resultado.append(i)
 	return resultado
+
+def atualizalarPinguins():
+	with Session(engine) as sessao:
+		p = sessao.execute(text("""select 
+(select c.Ab_SenC from sensorcontato c where c.Id_SenC = 3 order by c.Id_RegC desc limit 1) aberto,
+(select p.Oc_Sens from sensorpresenca p where p.Id_SenP = 3 order by p.Id_RegP desc limit 1) presente"""))
+
+		pinguin = []
+
+		for i in p:
+			pinguin.append({
+				"Aberto":i[0],
+				"Presente": i[1]
+				    })
+		
+		print(pinguin[0]["Presente"])
+		return pinguin

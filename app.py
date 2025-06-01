@@ -169,11 +169,19 @@ def obterFluxo():
 def atualClientes():
     return render_template('index/clientesAtuais.html', titulo='clientesAtuais')
 
+
 @app.get('/dash')
 def dash():
     mes_passado = (datetime.today() + timedelta(days=-30)).strftime('%Y-%m-%d')
     hoje = datetime.today().strftime('%Y-%m-%d')
     return render_template('index/dashboard.html', titulo='Dashboard', mes_passado=mes_passado, hoje=hoje)
+
+@app.get('/atualizaPinguin')
+def atualizaPinguin():
+    pinguin = banco.atualizalarPinguins()
+
+    return json.jsonify(pinguin)
+
 
 if __name__ == '__main__':
     app.run(host=config.host, port=config.port)
