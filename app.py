@@ -10,15 +10,9 @@ app = Flask(__name__)
 # Caminho para a home page
 @app.get('/')
 def index():
-    hoje = datetime.today().strftime('%Y-%m-%d')
-    return render_template('index/index.html', hoje=hoje)
-
-# Caminho para a página contendo o heatmap
-@app.get('/heatmap')
-def heatmap():
     mes_passado = (datetime.today() + timedelta(days=-30)).strftime('%Y-%m-%d')
     hoje = datetime.today().strftime('%Y-%m-%d')
-    return render_template('index/heatmap.html', mes_passado=mes_passado, hoje=hoje)
+    return render_template('index/index.html', mes_passado=mes_passado, hoje=hoje)
 
 # Caminho para a página sobre nós
 @app.get('/sobre')
@@ -76,13 +70,6 @@ def atualizarBanco():
 def digitalTwin():
     return render_template('index/digitalTwin.html', titulo='digitalTwin')
 
-# Caminho para o gráfico de linha (Fluxo de passagem x Hora)
-@app.get('/linha')
-def linha():
-    mes_passado = (datetime.today() + timedelta(days=-30)).strftime('%Y-%m-%d')
-    hoje = datetime.today().strftime('%Y-%m-%d')
-    return render_template('index/linha.html', titulo='Gráfico de Linha', mes_passado=mes_passado, hoje=hoje)
-
 # Função responsável por popular o heatmap
 @app.get('/obterDadosHeatmap')
 def obterDadosHeatmap():
@@ -114,13 +101,6 @@ def obterFluxoHora():
 
     return json.jsonify(dados)
 
-# Caminho para a página que tem o tempo médio de decisão de compra
-@app.get('/decisao')
-def decisao():
-    data_inicial = (datetime.today() + timedelta(days=-30)).strftime('%Y-%m-%d')
-    data_final = datetime.today().strftime('%Y-%m-%d')
-    return render_template('index/decisao.html', titulo='Grandes Numeros', data_inicial=data_inicial, data_final=data_final)
-
 # Função para obter o tempo médio de decisão de compra
 @app.get('/obterMediaDecisao')
 def obterMedia():
@@ -134,14 +114,6 @@ def obterMedia():
         print(dados[0][0])
 
     return jsonify(dados[0][0] // 60)
-
-
-# Caminho para o gráfico de barras
-@app.get('/barras')
-def barras():
-    mes_passado = (datetime.today() + timedelta(days=-30)).strftime('%Y-%m-%d')
-    hoje = datetime.today().strftime('%Y-%m-%d')
-    return render_template('index/barras.html', titulo='Gráfico de Barras', mes_passado=mes_passado, hoje=hoje)
 
 # Função para popular o gráfico de barras
 @app.get('/obterTaxaAtratividade')

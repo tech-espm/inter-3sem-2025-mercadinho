@@ -90,20 +90,6 @@
 
         <li class="nav-item">
           <a class="nav-link" href="/">
-            <i class="fas fa-solid fa-chart-line"></i>
-            <span>Período</span>
-          </a>
-        </li>
-
-        <li class="nav-item">
-          <a class="nav-link" href="/heatmap">
-            <i class="fas fa-solid fa-calendar"></i>
-            <span>Heatmap</span>
-          </a>
-        </li>
-
-        <li class="nav-item">
-          <a class="nav-link" href="/">
             <i class="fas fa-solid fa-file-export"></i>
             <span>Relatório</span>
           </a>
@@ -113,13 +99,6 @@
           <a class="nav-link" href="/sobre">
             <i class="fas fa-solid fa-address-card"></i>
             <span>Sobre nós</span>
-          </a>
-        </li>
-
-        <li class="nav-item">
-          <a class="nav-link" href="/linha">
-            <i class="fas fa-solid fa-address-card"></i>
-            <span>Gráfico de linha</span>
           </a>
         </li>
 
@@ -218,7 +197,9 @@
           </nav>
 
           <div class="limitador fundo-cinza">
-            <div class="conteudo fundo-cinza">{% block body %}{% endblock %}</div>
+            <div class="conteudo fundo-cinza">
+              {% block body %}{% endblock %}
+            </div>
           </div>
         </div>
 

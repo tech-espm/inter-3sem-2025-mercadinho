@@ -6,13 +6,13 @@ html,
 body {
 	/* Para fazer o rodapé ficar sempre na parte inferior da página ;) */
 	min-height: 100vh;
-	background-color: #e3e3e3;	
+	background-color: #e3e3e3;
 }
 
 .limitador {
 	max-width: 1200px;
 	margin: 0px auto;
-	background-color: #e3e3e3;	
+	background-color: #e3e3e3;
 }
 
 .icone-navbar-cima {
@@ -23,7 +23,7 @@ body {
 .conteudo {
 	/* Para fazer o rodapé ficar sempre na parte inferior da página ;) */
 	flex: 1 1 auto;
-	background-color: #e3e3e3;	
+	background-color: #e3e3e3;
 }
 
 .rodape {
@@ -42,6 +42,7 @@ body {
 	background-color: #e3e3e3;
 	padding: 30px 70px;
 }
+
 .fundo-cinza {
 	background-color: #e3e3e3;
 }
@@ -218,43 +219,50 @@ body {
 	align-items: center;
 }
 
-td, th{
+td,
+th {
 	max-width: 120px;
 }
 
-th{
+th {
 	max-width: 120px;
 	text-align: center;
 }
 
-td p{
+td p {
 	margin: 5px 5px;
 	text-align: center;
 	max-width: 100px;
 
 }
 
-th, td p{
+th,
+td p {
 	font-size: 0.55vw;
+	margin: 3.1px;
 }
 
-table{
-	max-width: 100%;
+table {
+	max-width: 500px;
 }
 
-th, td{
+th,
+td {
 	width: 70px;
 }
 
-.subtitulo{
-	font-size: 0.82rem;
-	font-weight: 600;
-	color: #2b2b2b;
-	text-align: center	;
+.subtitulo {
+	font-size: 0.76rem;
+	font-weight: bold;
+	color: #666666;
+	text-align: center;
+	margin-bottom: 17px;
+	padding-top: 7px;
+	font-family: sans-serif;
 }
 
-.GdsNums{
-	font-size: 1.5rem;
+.GdsNums {
+	font-size: 2rem;
 	font-weight: 600;
 	color: #2b2b2b;
 	text-align: center;
