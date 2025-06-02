@@ -70,6 +70,10 @@ def atualizarBanco():
 def digitalTwin():
     return render_template('index/digitalTwin.html', titulo='digitalTwin')
 
+@app.get('/exportar')
+def exportar():
+    return render_template('index/exportar.html', titulo='Exportação')
+
 # Função responsável por popular o heatmap
 @app.get('/obterDadosHeatmap')
 def obterDadosHeatmap():

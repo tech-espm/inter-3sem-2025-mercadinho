@@ -9,10 +9,14 @@ body {
 	background-color: #e3e3e3;
 }
 
+#wrapper #content-wrapper {
+	background: none;
+}
+
 .limitador {
 	max-width: 1200px;
 	margin: 0px auto;
-	background-color: #e3e3e3;
+	/*background-color: #e3e3e3;*/
 }
 
 .icone-navbar-cima {
@@ -23,7 +27,7 @@ body {
 .conteudo {
 	/* Para fazer o rodapé ficar sempre na parte inferior da página ;) */
 	flex: 1 1 auto;
-	background-color: #e3e3e3;
+	/*background-color: #e3e3e3;*/
 }
 
 .rodape {
@@ -39,12 +43,12 @@ body {
 }
 
 .fundo-cinza-padding {
-	background-color: #e3e3e3;
+	/*background-color: #e3e3e3;*/
 	padding: 30px 70px;
 }
 
 .fundo-cinza {
-	background-color: #e3e3e3;
+	/*background-color: #e3e3e3;*/
 }
 
 .fundo-branco-borda-arredondada {
@@ -64,7 +68,7 @@ body {
 }
 
 .fundo-cinza-card {
-	background-color: #e3e3e3;
+	/*background-color: #e3e3e3;*/
 	border-radius: 5px;
 }
 

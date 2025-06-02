@@ -1,0 +1,73 @@
+{% extends 'layout.html' %} {% block body %}
+
+<div id="tabelaContainer"></div>
+
+{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" type="text/css" href="/static/lib/datatables.net-bs4/css/dataTables.bootstrap4.min.css" />
+<link rel="stylesheet" type="text/css" href="/static/lib/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css" />
+<link rel="stylesheet" type="text/css" href="/static/lib/datatables.net-select-bs4/css/select.bootstrap4.min.css" />
+{% endblock %}
+
+{% block rodape %}
+<script type="text/javascript" src="/static/lib/datatables.net/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="/static/lib/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script>
+<script type="text/javascript" src="/static/lib/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+<script type="text/javascript" src="/static/lib/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js"></script>
+<script type="text/javascript" src="/static/lib/datatables.net-buttons/js/buttons.html5.min.js"></script>
+<script type="text/javascript" src="/static/lib/datatables.net-buttons/js/buttons.flash.min.js"></script>
+<script type="text/javascript" src="/static/lib/datatables.net-buttons/js/buttons.print.min.js"></script>
+<script type="text/javascript" src="/static/lib/datatables.net-select/js/dataTables.select.min.js"></script>
+<script type="text/javascript" src="/static/lib/datatables.net-colreorder/js/dataTables.colReorder.min.js"></script>
+<script type="text/javascript" src="/static/js/datatables-custom.js"></script>
+<script type="text/javascript" src="/static/lib/sheetjs/xlsx.full.min.js"></script>
+
+<script type="text/javascript">
+	//<![CDATA[
+	"use strict";
+
+    let tabela;
+
+    function atualizarTabela(dados) {
+		$("#tabelaContainer").html('<table class="table table-flush table-striped table-hover" id="tabela"></table>');
+
+		// https://datatables.net/reference/option/order
+		// https://datatables.net/reference/option/columns
+		tabela = prepareDataTable("tabela", {
+			order: [[0, "asc"]],
+			deferRender: true,
+			columns: [
+				{ title: "Título Texto", render: encode, data: "campoTexto" },
+				{ title: "Título Data/Hora", "type": "customdateint", data: "campoData" },
+				{ title: "Título Data/Hora", "type": "customdatetimeint", data: "campoDataHora" },
+				{ title: "Título Número", "type": "num", data: "campoNumero"},
+			],
+			data: dados,
+			export: { xlsx: true, title: "Dados" }
+		});
+	}
+
+	async function buscarRegistros() {
+		waitSwal();
+
+		// @@@ fetch
+		let dados = [
+			{
+				campoTexto: "Teste",
+				campoData: "20/05/2025",
+				campoDataHora: "20/05/2025 10:15",
+				campoNumero: 123,
+			}
+		];
+
+		Swal.close();
+
+		atualizarTabela(dados);
+	}
+
+	buscarRegistros();
+
+	//]]>
+</script>
+{% endblock %}
