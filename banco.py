@@ -15,6 +15,7 @@ from sqlalchemy import create_engine, text
 from sqlalchemy.orm import Session
 from config import conexao_banco
 
+
 # Como criar uma comunicação com o banco de dados:
 # https://docs.sqlalchemy.org/en/14/core/engines.html
 #
@@ -90,160 +91,185 @@ engine = create_engine(conexao_banco)
 
 # Função que atualiza o banco de dados com base no último dado inserido
 def obterIdMaximo(id, tabela):
-	with Session(engine) as sessao:
-		registro = sessao.execute(text(f"SELECT MAX({id}) FROM {tabela}")).first()
+	try:	
+		with Session(engine) as sessao:
+			registro = sessao.execute(text(f"SELECT MAX({id}) FROM {tabela}")).first()
 
-		if registro == None or registro[0] == None:
-			return 0
-		else:
-			return registro[0]
+			if registro == None or registro[0] == None:
+				return 0
+			else:
+				return registro[0]
+	except Exception as e:
+		return {"content": {'error': str(e)}, "ok": True, "status": 500}
 
 # Insere uma tabela de dados de passagem de clientes
 def inserirPassagem(registros):
-	with Session(engine) as sessao, sessao.begin():
-		for registro in registros:
-			sessao.execute(text("INSERT INTO SensorPassagem (Id_RegF, Dt_SenF, Id_SenF, En_SenF, Sd_SenF, Id_Loja) VALUES (:id, :data, :id_sensor, :entrada, :saida, 1)"), registro)
-
+	try:
+		with Session(engine) as sessao, sessao.begin():
+			for registro in registros:
+				sessao.execute(text("INSERT INTO SensorPassagem (Id_RegF, Dt_SenF, Id_SenF, En_SenF, Sd_SenF, Id_Loja) VALUES (:id, :data, :id_sensor, :entrada, :saida, 1)"), registro)
+	except Exception as e:
+		return {"content": {'error': str(e)}, "ok": True, "status": 500}
 # Insere uma tabela de dados de contato da porta
 def inserirContato(registros):
-	with Session(engine) as sessao, sessao.begin():
-		for registro in registros:
-			sessao.execute(text(f"INSERT INTO SensorContato (Id_RegC, Dt_SenC, Id_SenC, Tm_SenC, Ab_SenC, Id_Gelad) VALUES (:id, :data, :id_sensor, :delta, :fechado, 3)"), registro)
-
+	try:
+		with Session(engine) as sessao, sessao.begin():
+			for registro in registros:
+				sessao.execute(text(f"INSERT INTO SensorContato (Id_RegC, Dt_SenC, Id_SenC, Tm_SenC, Ab_SenC, Id_Gelad) VALUES (:id, :data, :id_sensor, :delta, :fechado, 3)"), registro)
+	except Exception as e:
+		return {"content": {'error': str(e)}, "ok": True, "status": 500}
 # Insere uma tabela de dados de presença de clientes 
 def inserirPresenca(registros):
-	with Session(engine) as sessao, sessao.begin():
-		for registro in registros:
-			if registro["id_sensor"] < 4:
-				sessao.execute(text("INSERT INTO SensorPresenca (Id_RegP, Dt_SenP, Tm_SenP, Oc_Sens, Id_SenP, Id_Gelad) VALUES (:id, :data, :delta, :ocupado, :id_sensor, :id_sensor)"), registro)
-
+	try:
+		with Session(engine) as sessao, sessao.begin():
+			for registro in registros:
+				if registro["id_sensor"] < 4:
+					sessao.execute(text("INSERT INTO SensorPresenca (Id_RegP, Dt_SenP, Tm_SenP, Oc_Sens, Id_SenP, Id_Gelad) VALUES (:id, :data, :delta, :ocupado, :id_sensor, :id_sensor)"), registro)
+	except Exception as e:
+		return {"content": {'error': str(e)}, "ok": True, "status": 500}
 # Função que extrai os dados do banco para gerar o heatmap
 def listarPassagemMensal(data_inicial, data_final):
-	with Session(engine) as sessao:
-		parametros = {
-			'data_inicial': data_inicial + ' 00:00:00',
-			'data_final': data_final + ' 23:59:59'
-		}
+	try:
+		with Session(engine) as sessao:
+			parametros = {
+				'data_inicial': data_inicial + ' 00:00:00',
+				'data_final': data_final + ' 23:59:59'
+			}
 
-		# Mais informações sobre o método execute e sobre o resultado que ele retorna:
-		# https://docs.sqlalchemy.org/en/14/orm/session_api.html#sqlalchemy.orm.Session.execute
-		# https://docs.sqlalchemy.org/en/14/core/connections.html#sqlalchemy.engine.Result
-		registros = sessao.execute(text("""
-		Select date_format(dia, '%d/%m') as dia, visitantes as total_entrada, weekday(dia) as diaSmn
-		from (Select concat(date_format(Dt_SenF, '%Y/%m/%d'), " 00:00:00") as dia ,sum(En_SenF) as visitantes
-			from SensorPassagem 
-			where Dt_SenF 
-			between :data_inicial and :data_final 
-			group by dia) as meioTermoPassagem
-		"""), parametros)
+			# Mais informações sobre o método execute e sobre o resultado que ele retorna:
+			# https://docs.sqlalchemy.org/en/14/orm/session_api.html#sqlalchemy.orm.Session.execute
+			# https://docs.sqlalchemy.org/en/14/core/connections.html#sqlalchemy.engine.Result
+			registros = sessao.execute(text("""
+			Select date_format(dia, '%d/%m') as dia, visitantes as total_entrada, weekday(dia) as diaSmn
+			from (Select concat(date_format(Dt_SenF, '%Y/%m/%d'), " 00:00:00") as dia ,sum(En_SenF) as visitantes
+				from SensorPassagem 
+				where Dt_SenF 
+				between :data_inicial and :data_final 
+				group by dia) as meioTermoPassagem
+			"""), parametros)
 
-		lista = []
+			lista = []
 
-		for (dia, total_entrada, diaSmn) in registros:
-			lista.append({
-				"dia": dia,
-				"total_entrada": total_entrada,
-				"diaSmn": diaSmn
-			})
+			for (dia, total_entrada, diaSmn) in registros:
+				lista.append({
+					"dia": dia,
+					"total_entrada": total_entrada,
+					"diaSmn": diaSmn
+				})
 
-		return lista
-
+			return lista
+	except Exception as e:
+		return {"content": {'error': str(e)}, "ok": True, "status": 500}
 # Função que extrai os dados do banco para gerar o gráfico de linhas
 def obterFluxoPorHora(data_inicial=None, data_final=None):
-	with Session(engine) as sessao:
-		parametros = {}
-		sql = "select date_format(Dt_SenF, '%H:00') as hora, sum(En_SenF) as total_entradas, sum(Sd_SenF) as total_saidas from SensorPassagem"
+		try:
+			with Session(engine) as sessao:
+				parametros = {}
+				sql = "select date_format(Dt_SenF, '%H:00') as hora, sum(En_SenF) as total_entradas, sum(Sd_SenF) as total_saidas from SensorPassagem"
 
-		if data_inicial and data_final:
-			sql += " where Dt_SenF between :data_inicial and :data_final"
-			parametros["data_inicial"] = data_inicial + " 00:00:00"
-			parametros["data_final"] = data_final + " 23:59:59"
+				if data_inicial and data_final:
+					sql += " where Dt_SenF between :data_inicial and :data_final"
+					parametros["data_inicial"] = data_inicial + " 00:00:00"
+					parametros["data_final"] = data_final + " 23:59:59"
 
-		sql += " group by hora order by hora"
+				sql += " group by hora order by hora"
 
-		registros = sessao.execute(text(sql), parametros)
-		resultado = []
+				registros = sessao.execute(text(sql), parametros)
+				resultado = []
 
-		for hora, entradas, saidas in registros:
-			resultado.append({
-				"hora": hora,
-				"entradas": entradas,
-				"saidas": saidas
-			})
+				for hora, entradas, saidas in registros:
+					resultado.append({
+						"hora": hora,
+						"entradas": entradas,
+						"saidas": saidas
+					})
 
-		return resultado
+				return resultado
+		except Exception as e:
+			return {"content": {'error': str(e)}, "ok": True, "status": 500}
 
 # Função que extrai os dados do banco para obter o tempo médio de decisão de compra
 def obterMediaDecisao(data_inicial=None, data_final=None):
-	with Session(engine) as sessao:
-		parametros = {}
-		sql = "select avg(delta) from (select avg(Tm_SenP) as delta,  date_format(Dt_SenP, '%Y/%m/%d %H:%i') as Dia from sensorpresenca where date_format(Dt_SenP, '%Y/%m/%d %H:%i') in (select date_format(Dt_SenC, '%Y/%m/%d %H:%i') from sensorcontato "
-		if data_inicial and data_final:
-			sql += """where Ab_SenC = 1 and Dt_SenC between :data_inicial and :data_final )	group by date_format(Dt_SenP, '%Y/%m/%d %H:%i')) as n;"""
-			parametros["data_inicial"] = data_inicial
-			parametros["data_final"] = data_final 
-		
-		else:
-			sql += """where Ab_SenC = 1) group by date_format(Dt_SenP, '%Y/%m/%d %H:%i')) as n;"""
-		
-		registro = sessao.execute(text(sql), parametros)
-		resultado = []
+	try:
+		with Session(engine) as sessao:
+			parametros = {}
+			sql = "select avg(delta) from (select avg(Tm_SenP) as delta,  date_format(Dt_SenP, '%Y/%m/%d %H:%i') as Dia from sensorpresenca where date_format(Dt_SenP, '%Y/%m/%d %H:%i') in (select date_format(Dt_SenC, '%Y/%m/%d %H:%i') from sensorcontato "
+			if data_inicial and data_final:
+				sql += """where Ab_SenC = 1 and Dt_SenC between :data_inicial and :data_final )	group by date_format(Dt_SenP, '%Y/%m/%d %H:%i')) as n;"""
+				parametros["data_inicial"] = data_inicial
+				parametros["data_final"] = data_final 
+			
+			else:
+				sql += """where Ab_SenC = 1) group by date_format(Dt_SenP, '%Y/%m/%d %H:%i')) as n;"""
+			
+			registro = sessao.execute(text(sql), parametros)
+			resultado = []
 
-		for i in registro:
-			resultado.append(i)
+			for i in registro:
+				resultado.append(i)
 
-		return resultado
-
+			return resultado
+	except Exception as e:
+		return {"content": {'error': str(e)}, "ok": True, "status": 500}
 # Função que extrai os dados do banco para obter a taxa de atratividade 
 def obterTaxaAtratividade(data_inicial=None, data_final=None):
-	with Session(engine) as sessao:
-		parametros = {}
-		sql = "select Id_Gelad, count(*) as total_visitas from sensorpresenca where Oc_Sens = 1"
-		if data_inicial and data_final:
-			sql += " and Dt_SenP between :data_inicial and :data_final"
-			parametros["data_inicial"] = data_inicial + " 00:00:00"
-			parametros["data_final"] = data_final + " 23:59:59"
-		
-		sql += " group by Id_Gelad order by total_visitas desc"
-		
-		registro = sessao.execute(text(sql), parametros)
+	try:
+		with Session(engine) as sessao:
+			parametros = {}
+			sql = "select Id_Gelad, count(*) as total_visitas from sensorpresenca where Oc_Sens = 1"
+			if data_inicial and data_final:
+				sql += " and Dt_SenP between :data_inicial and :data_final"
+				parametros["data_inicial"] = data_inicial + " 00:00:00"
+				parametros["data_final"] = data_final + " 23:59:59"
+			
+			sql += " group by Id_Gelad order by total_visitas desc"
+			
+			registro = sessao.execute(text(sql), parametros)
 
-		resultado = []
-		for Id_Gelad, total_visitas in registro:
-			resultado.append({
-				"Id_Gelad": Id_Gelad,
-				"total_visitas": total_visitas
-			})
-		
-		return resultado
+			resultado = []
+			for Id_Gelad, total_visitas in registro:
+				resultado.append({
+					"Id_Gelad": Id_Gelad,
+					"total_visitas": total_visitas
+				})
+			
+			return resultado
+	except Exception as e:
+		return {"content": {'error': str(e)}, "ok": True, "status": 500}
 
 
 # Função para devolver a quantidade de clientes na loja no momento
 def obterFluxoAtual():
-	with Session(engine) as sessao:
-		fluxo_atual = sessao.execute(text("""
-		SELECT SUM(En_SenF) - SUM(Sd_SenF) AS clientes
-			FROM SensorPassagem
-			WHERE date_format(Dt_SenF, '%Y/%d/%d') = date_format(current_date(), '%Y/%d/%d');
-		"""))
-	resultado=[]
-	for i in fluxo_atual:
-		resultado.append(i)
-	return resultado
+	try:
+		with Session(engine) as sessao:
+			fluxo_atual = sessao.execute(text("""
+			SELECT SUM(En_SenF) - SUM(Sd_SenF) AS clientes
+				FROM SensorPassagem
+				WHERE date_format(Dt_SenF, '%Y/%d/%d') = date_format(current_date(), '%Y/%d/%d');
+			"""))
+		resultado=[]
+		for i in fluxo_atual:
+			resultado.append(i)
+		return resultado
+	except Exception as e:
+		return {"content": {'error': str(e)}, "ok": True, "status": 500}
 
 # Função para verificar a existencia de cliente na frente da geladeira e se esta está aberta ou fechada
 def atualizarPinguins():
-	with Session(engine) as sessao:
-		p = sessao.execute(text("""select 
-			(select c.Ab_SenC from sensorcontato c where c.Id_SenC = 3 order by c.Id_RegC desc limit 1) aberto,
-			(select p.Oc_Sens from sensorpresenca p where p.Id_SenP = 3 order by p.Id_RegP desc limit 1) presente"""))
+	try:
+		with Session(engine) as sessao:
+			p = sessao.execute(text("""select 
+				(select c.Ab_SenC from sensorcontato c where c.Id_SenC = 3 order by c.Id_RegC desc limit 1) aberto,
+				(select p.Oc_Sens from sensorpresenca p where p.Id_SenP = 3 order by p.Id_RegP desc limit 1) presente"""))
 
-		pinguin = []
+			pinguin = []
 
-		for i in p:
-			pinguin.append({
-				"Aberto":i[0],
-				"Presente": i[1]
-				    })
-		
-		return pinguin
+			for i in p:
+				pinguin.append({
+					"Aberto":i[0],
+					"Presente": i[1]
+						})
+			
+			return pinguin
+	except Exception as e:
+		return {"content": {'error': str(e)}, "ok": True, "status": 500}

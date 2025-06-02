@@ -72,9 +72,12 @@
 
     try {
       let response = await fetch("/atualizarBanco");
-
+      console.log(response)
       if (response.ok) {
         Swal.close();
+      }
+      if (response.status == 500) {
+        Swal.fire("Erro", "Erro ao listar os dados: " + response.content.error, "error");
       }
     } catch (ex) {
       Swal.fire("Erro", "Erro ao listar os dados: " + ex.message, "error");
@@ -207,6 +210,13 @@
         const p = await fetch("/atualizaPinguin");
         const pinguin = await p.json();
         console.log(pinguin[0]["Aberto"], pinguin[0]["Presente"]);
+        if (p.ok) {
+            Swal.close();
+        }
+        if (p.status == 500) {
+            Swal.fire("Erro", "Erro ao listar os dados: " + response.content.error, "error");
+            return;
+        }
         if (pinguin[0]["Aberto"] == 1 && pinguin[0]["Presente"] == 1) {
 
             togglePessoa(2,1)
