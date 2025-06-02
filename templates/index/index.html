@@ -269,7 +269,7 @@
     try {
       let data_inicial = document.getElementById("data_inicial").value;
       let data_final = document.getElementById("data_final").value;
-      let responseHeat = await fetch(
+      const responseHeat = await fetch(
         `/obterDadosHeatmap?data_inicial=${data_inicial}&data_final=${data_final}`
       );
       const responseTaxa = await fetch(
@@ -296,13 +296,18 @@
 
         gerarHeatmap(consolidadoHeat);
         calcularTotalVisitas(consolidadoHeat);
-      } else {
-        await exibirErro(responseHeat);
-      }
+      } else if(responseHeat[1] == 500) {
+        await exibirErro(responseHeat[0].message);
+      } 
+
       if (!responseTaxa.ok) {
         await exibirErro(responseTaxa);
         return;
+      } else if(responseTaxa[1] == 500) {
+        await exibirErro(responseTaxa[0].message);
+        return;
       }
+      
       const dadosGela = await responseTaxa.json();
 
       if (!dadosGela || dadosGela.length === 0) {
@@ -369,13 +374,22 @@
           },
         },
       });
-
+      console.log(responseDecisao.message)
+      if(responseDecisao[1] == 500) {
+        Swal.fire(responseDecisao[0].message);
+      } 
+      
       const dadosDecisao = await responseDecisao.json();
-
+      
+      
       const e = document.getElementById("resultado");
-
       e.innerHTML = `${dadosDecisao} minutos `;
 
+      if(responseLinha[1] == 500) {
+        await exibirErro(responseLinha[0].message);
+        console.log(responseLinha[1])
+      }
+      
       const dadosLinha = await responseLinha.json();
 
       if (
@@ -390,17 +404,17 @@
         }
         return;
       }
-
+      
       const horas = dadosLinha.map((item) => item.hora);
       const entradas = dadosLinha.map((item) => item.entradas);
       const saidas = dadosLinha.map((item) => item.saidas);
-
+      
       const ctx1 = document.getElementById("graficoFluxoHora").getContext("2d");
-
+      
       if (meuGrafico) {
         meuGrafico.destroy();
       }
-
+      
       meuGrafico = new Chart(ctx1, {
         type: "line",
         data: {
@@ -443,12 +457,13 @@
         },
       });
 
-      Swal.close();
+      
     } catch (ex) {
       Swal.fire("Erro", "Erro ao listar os dados: " + ex.message, "error");
     }
   }
-
+  
+  Swal.close();
   atualizarDadosGeral();
   atualizarDados();
 </script>

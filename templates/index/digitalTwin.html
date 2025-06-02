@@ -72,90 +72,89 @@
 
     try {
       let response = await fetch("/atualizarBanco");
-      console.log(response)
       if (response.ok) {
-        Swal.close();
-      }
-      if (response.status == 500) {
-        Swal.fire("Erro", "Erro ao listar os dados: " + response.content.error, "error");
-      }
+          Swal.close();
+        }
+        if (response[1] == 500) {
+            Swal.fire("Erro", "Erro ao listar os dados: " + response[0].message, "error");
+        }
     } catch (ex) {
-      Swal.fire("Erro", "Erro ao listar os dados: " + ex.message, "error");
+        Swal.fire("Erro", "Erro ao listar os dados: " + ex.message, "error");
     }
-  }
+}
 
-    async function carregarModelo(path, scene) {
-        const result = await BABYLON.SceneLoader.ImportMeshAsync("", "/static/glb/", path, scene);
-        return result.meshes[0];
-    }
+async function carregarModelo(path, scene) {
+    const result = await BABYLON.SceneLoader.ImportMeshAsync("", "/static/glb/", path, scene);
+    return result.meshes[0];
+}
 
-    async function createScene() {
-        scene = new BABYLON.Scene(engine);
-
-        const hdrTexture = BABYLON.CubeTexture.CreateFromPrefilteredData("/static/glb/environment.dds", scene);
-        scene.createDefaultSkybox(hdrTexture, true);
-
-        scene.createDefaultCameraOrLight(true, true, true);
-        const camera = scene.activeCamera;
-        //camera.alpha = Math.PI / 2;
-        camera.alpha = 5.315714326451141;
-        camera.beta = 1.188337079465186;
-        camera.radius = 6.99621204442228;
-        camera.target.x = -1;
-
-        
-        // criacao da luz (vector 3 = posicao)
-        const luz = new BABYLON.HemisphericLight("hemiLight", new BABYLON.Vector3(0, 1, 0), scene); 
-        luz.intensity = 0.9;
-        luz.diffuse = new BABYLON.Color3(1, 1, 1); // cor da luz
-
-        //fundo
-        scene.clearColor = new BABYLON.Color4(); 
-        scene.clearColor = BABYLON.Color4.FromHexString("#87CEEB");
-
-
-
-        // modelo loja
-        await carregarModelo("Loja.glb", scene);
-
-        
-
-        // Porta 1
-        portaModelos[1].fechada = await carregarModelo("Porta01Fechada.glb", scene);
-        portaModelos[1].aberta = await carregarModelo("Porta01Aberta.glb", scene);
-        portaModelos[1].aberta.setEnabled(false);
-
-        // Porta 2
-        portaModelos[2].fechada = await carregarModelo("Porta02Fechada.glb", scene);
-        portaModelos[2].aberta = await carregarModelo("Porta02Aberta.glb", scene);
-        portaModelos[2].aberta.setEnabled(false);
-
-        // Porta 3
-        portaModelos[3].fechada = await carregarModelo("Porta03Fechada.glb", scene);
-        portaModelos[3].aberta = await carregarModelo("Porta03Aberta.glb", scene);
-        portaModelos[3].aberta.setEnabled(false);
-
+async function createScene() {
+    scene = new BABYLON.Scene(engine);
+    
+    const hdrTexture = BABYLON.CubeTexture.CreateFromPrefilteredData("/static/glb/environment.dds", scene);
+    scene.createDefaultSkybox(hdrTexture, true);
+    
+    scene.createDefaultCameraOrLight(true, true, true);
+    const camera = scene.activeCamera;
+    //camera.alpha = Math.PI / 2;
+    camera.alpha = 5.315714326451141;
+    camera.beta = 1.188337079465186;
+    camera.radius = 6.99621204442228;
+    camera.target.x = -1;
+    
+    
+    // criacao da luz (vector 3 = posicao)
+    const luz = new BABYLON.HemisphericLight("hemiLight", new BABYLON.Vector3(0, 1, 0), scene); 
+    luz.intensity = 0.9;
+    luz.diffuse = new BABYLON.Color3(1, 1, 1); // cor da luz
+    
+    //fundo
+    scene.clearColor = new BABYLON.Color4(); 
+    scene.clearColor = BABYLON.Color4.FromHexString("#87CEEB");
+    
+    
+    
+    // modelo loja
+    await carregarModelo("Loja.glb", scene);
+    
+    
+    
+    // Porta 1
+    portaModelos[1].fechada = await carregarModelo("Porta01Fechada.glb", scene);
+    portaModelos[1].aberta = await carregarModelo("Porta01Aberta.glb", scene);
+    portaModelos[1].aberta.setEnabled(false);
+    
+    // Porta 2
+    portaModelos[2].fechada = await carregarModelo("Porta02Fechada.glb", scene);
+    portaModelos[2].aberta = await carregarModelo("Porta02Aberta.glb", scene);
+    portaModelos[2].aberta.setEnabled(false);
+    
+    // Porta 3
+    portaModelos[3].fechada = await carregarModelo("Porta03Fechada.glb", scene);
+    portaModelos[3].aberta = await carregarModelo("Porta03Aberta.glb", scene);
+    portaModelos[3].aberta.setEnabled(false);
+    
 
         // Pessoa 1
         pessoaModelos[1].mesh = await carregarModelo("Cliente01.glb", scene);
         pessoaModelos[1].mesh.setEnabled(false);
         pessoaModelos[1].visivel = false;
-
+        
         // Pessoa 2
         pessoaModelos[2].mesh = await carregarModelo("Cliente02.glb", scene);
         pessoaModelos[2].mesh.setEnabled(false);
         pessoaModelos[2].visivel = false;
-
+        
         // Pessoa 3
         pessoaModelos[3].mesh = await carregarModelo("Cliente03.glb", scene);
         pessoaModelos[3].mesh.setEnabled(false);
         pessoaModelos[3].visivel = false;
     }
-
+    
     function togglePorta(index, a) {
         const porta = portaModelos[index];
         if (!porta.aberta || !porta.fechada) return;
-
+        
         if (a == 1){
             porta.abertaAtiva = true;
         } else if (a == 0){
@@ -164,11 +163,11 @@
         porta.aberta.setEnabled(porta.abertaAtiva);
         porta.fechada.setEnabled(!porta.abertaAtiva);
     }
-
+    
     function togglePessoa(index, presenca) {
         const registro = pessoaModelos[index];
         if (!registro.mesh) return;
-
+        
         if (presenca === 1) {
             registro.visivel = true;
         } else if (presenca === 0) {
@@ -176,10 +175,10 @@
         } else {
             registro.visivel = !registro.visivel;
         }
-
+        
         registro.mesh.setEnabled(registro.visivel);
     }
-
+    
     async function init() {
         try {
             engine = new BABYLON.Engine(canvas, true, {
@@ -191,30 +190,30 @@
         } catch (ex) {
             alert("Erro ao criar a engine: " + ex.message || ex.toString());
         }
-
+        
         window.addEventListener("resize", function () {
             engine.resize();
         });
-
+        
         engine.runRenderLoop(function () {
             if (scene && scene.activeCamera) {
                 scene.render();
             }
         });
-
+        
     }
     window.addEventListener("load", init);
-
-
+    
+    
     async function atualizarPortas() {
         const p = await fetch("/atualizaPinguin");
         const pinguin = await p.json();
-        console.log(pinguin[0]["Aberto"], pinguin[0]["Presente"]);
+        console.log(pinguin[0]["Aberto"], pinguin[0]["Presente"], pinguin[0].message);
         if (p.ok) {
             Swal.close();
         }
-        if (p.status == 500) {
-            Swal.fire("Erro", "Erro ao listar os dados: " + response.content.error, "error");
+        if (pinguin[1] == 500) {
+            Swal.fire("Erro", "Erro ao listar os dados: " + pinguin[0].message, "error");
             return;
         }
         if (pinguin[0]["Aberto"] == 1 && pinguin[0]["Presente"] == 1) {

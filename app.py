@@ -62,7 +62,7 @@ def atualizarBanco():
         { 'dia': '17/09', 'valor': 78 },
         { 'dia': '18/09', 'valor': 93 },
         { 'dia': '19/09', 'valor': 110 }
-    ];
+    ]
     return json.jsonify(dados)
 
 # Caminho para a página do digital twin
@@ -90,7 +90,7 @@ def obterDadosHeatmap():
     dataInicial = request.args["data_inicial"]
     dataFinal = request.args["data_final"]
     dados = banco.listarPassagemMensal(dataInicial, dataFinal)
-    return json.jsonify(dados)
+    return dados
 
 # Função para popular o gráfico de linha
 @app.get('/obterFluxoHora')
@@ -103,7 +103,7 @@ def obterFluxoHora():
     else:
         dados = banco.obterFluxoPorHora()
 
-    return json.jsonify(dados)
+    return dados
 
 # Função para obter o tempo médio de decisão de compra
 @app.get('/obterMediaDecisao')
@@ -117,7 +117,7 @@ def obterMedia():
         dados = banco.obterMediaDecisao()
         print(dados[0][0])
 
-    return jsonify(dados[0][0] // 60)
+    return jsonify(dados)
 
 # Função para popular o gráfico de barras
 @app.get('/obterTaxaAtratividade')

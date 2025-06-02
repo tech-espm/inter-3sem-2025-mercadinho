@@ -100,7 +100,7 @@ def obterIdMaximo(id, tabela):
 			else:
 				return registro[0]
 	except Exception as e:
-		return {"content": {'error': str(e)}, "ok": True, "status": 500}
+		return ({"message": "Erro ao obter o id"}, 500)
 
 # Insere uma tabela de dados de passagem de clientes
 def inserirPassagem(registros):
@@ -109,7 +109,7 @@ def inserirPassagem(registros):
 			for registro in registros:
 				sessao.execute(text("INSERT INTO SensorPassagem (Id_RegF, Dt_SenF, Id_SenF, En_SenF, Sd_SenF, Id_Loja) VALUES (:id, :data, :id_sensor, :entrada, :saida, 1)"), registro)
 	except Exception as e:
-		return {"content": {'error': str(e)}, "ok": True, "status": 500}
+		return ({"message": "Erro ao inserir os dados"}, 500)
 # Insere uma tabela de dados de contato da porta
 def inserirContato(registros):
 	try:
@@ -117,7 +117,7 @@ def inserirContato(registros):
 			for registro in registros:
 				sessao.execute(text(f"INSERT INTO SensorContato (Id_RegC, Dt_SenC, Id_SenC, Tm_SenC, Ab_SenC, Id_Gelad) VALUES (:id, :data, :id_sensor, :delta, :fechado, 3)"), registro)
 	except Exception as e:
-		return {"content": {'error': str(e)}, "ok": True, "status": 500}
+		return ({"message": "Erro ao inserir os dados"}, 500)
 # Insere uma tabela de dados de presença de clientes 
 def inserirPresenca(registros):
 	try:
@@ -126,7 +126,7 @@ def inserirPresenca(registros):
 				if registro["id_sensor"] < 4:
 					sessao.execute(text("INSERT INTO SensorPresenca (Id_RegP, Dt_SenP, Tm_SenP, Oc_Sens, Id_SenP, Id_Gelad) VALUES (:id, :data, :delta, :ocupado, :id_sensor, :id_sensor)"), registro)
 	except Exception as e:
-		return {"content": {'error': str(e)}, "ok": True, "status": 500}
+		return ({"message": "Erro ao inserir os dados"}, 500)
 # Função que extrai os dados do banco para gerar o heatmap
 def listarPassagemMensal(data_inicial, data_final):
 	try:
@@ -159,7 +159,7 @@ def listarPassagemMensal(data_inicial, data_final):
 
 			return lista
 	except Exception as e:
-		return {"content": {'error': str(e)}, "ok": True, "status": 500}
+		return ({"message": "Erro ao listar a passagem mensal"}, 500)
 # Função que extrai os dados do banco para gerar o gráfico de linhas
 def obterFluxoPorHora(data_inicial=None, data_final=None):
 		try:
@@ -186,7 +186,7 @@ def obterFluxoPorHora(data_inicial=None, data_final=None):
 
 				return resultado
 		except Exception as e:
-			return {"content": {'error': str(e)}, "ok": True, "status": 500}
+			return ({"message": "Erro ao obter fluxo por hora"}, 500)
 
 # Função que extrai os dados do banco para obter o tempo médio de decisão de compra
 def obterMediaDecisao(data_inicial=None, data_final=None):
@@ -208,9 +208,9 @@ def obterMediaDecisao(data_inicial=None, data_final=None):
 			for i in registro:
 				resultado.append(i)
 
-			return resultado
+			return resultado[0][0] // 60
 	except Exception as e:
-		return {"content": {'error': str(e)}, "ok": True, "status": 500}
+		return ({"message": "Erro ao obter o tempo médio de decisão"}, 500)
 # Função que extrai os dados do banco para obter a taxa de atratividade 
 def obterTaxaAtratividade(data_inicial=None, data_final=None):
 	try:
@@ -235,7 +235,7 @@ def obterTaxaAtratividade(data_inicial=None, data_final=None):
 			
 			return resultado
 	except Exception as e:
-		return {"content": {'error': str(e)}, "ok": True, "status": 500}
+		return ({"message": "Erro ao obter a Taxa de Atratividade"}, 500)
 
 
 # Função para devolver a quantidade de clientes na loja no momento
@@ -252,7 +252,7 @@ def obterFluxoAtual():
 			resultado.append(i)
 		return resultado
 	except Exception as e:
-		return {"content": {'error': str(e)}, "ok": True, "status": 500}
+		return ({"message": "Erro ao obter o Fluxo Atual"}, 500)
 
 # Função para verificar a existencia de cliente na frente da geladeira e se esta está aberta ou fechada
 def atualizarPinguins():
@@ -272,4 +272,4 @@ def atualizarPinguins():
 			
 			return pinguin
 	except Exception as e:
-		return {"content": {'error': str(e)}, "ok": True, "status": 500}
+		return ({"message": "Erro ao atualizar o digital twin"}, 500)
