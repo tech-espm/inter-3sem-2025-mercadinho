@@ -149,7 +149,7 @@ def dash():
 # Função para verificar a existencia de cliente na frente da geladeira e se esta está aberta ou fechada
 @app.get('/atualizaPinguin')
 def atualizaPinguin():
-    pinguin = banco.atualizalarPinguins()
+    pinguin = banco.atualizarPinguins()
 
     return json.jsonify(pinguin)
 

@@ -232,7 +232,7 @@ def obterFluxoAtual():
 	return resultado
 
 # Função para verificar a existencia de cliente na frente da geladeira e se esta está aberta ou fechada
-def atualizalarPinguins():
+def atualizarPinguins():
 	with Session(engine) as sessao:
 		p = sessao.execute(text("""select 
 			(select c.Ab_SenC from sensorcontato c where c.Id_SenC = 3 order by c.Id_RegC desc limit 1) aberto,
