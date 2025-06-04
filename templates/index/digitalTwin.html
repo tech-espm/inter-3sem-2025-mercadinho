@@ -32,21 +32,22 @@
 {% block body %}
 
 <div class="container-fluid">
-    <h1>Projeto</h1>
-
-    <div id="canvasZone"><canvas id="renderCanvas"></canvas></div>
-
-    <!-- controle portas -->
-    <div class="text-center my-4">
-        <button class="btn btn-secondary mx-2" onclick="togglePorta(1)">Alternar Porta 1</button>
-        <button class="btn btn-secondary mx-2" onclick="togglePorta(2)">Alternar Porta 2</button>
-        <button class="btn btn-secondary mx-2" onclick="togglePorta(3)">Alternar Porta 3</button>
-        <button class="btn btn-secondary mx-2" onclick="togglePessoa(3)">Alternar cliente 3</button>
-
-
+    <div class="col-xl-12">
+        <div class="card shadow my-4">
+            <div class="card-body">
+                <div class="container-fluid">
+                    <div class="col-sm-6">
+                        <div class="card shadow my-4">
+                            <div class="card-body">
+                                <p id="resultado" class="GdsNums alinhaStart"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="canvasZone"><canvas id="renderCanvas"></canvas></div>
+            </div>
+        </div>
     </div>
-
-
 </div>
 
 <!-- BabylonJS - Controle das portas -->
@@ -244,6 +245,39 @@ async function createScene() {
     window.addEventListener("load", init);
 </script>
 
+<script type="text/javascript">
+    "use strict";
 
+    async function atualizarCliAtt() {
+      //waitSwal();
+
+      try {
+
+        const response = await fetch(
+          `/obterFluxoAtual`
+        );
+
+        if (!response.ok) {
+          await exibirErro(response);
+          return;
+        }
+
+        Swal.close();
+        const dados = await response.json();
+        
+        const e = document.getElementById("resultado");
+        
+        e.innerHTML = dados+ ` clientes na loja`;
+
+        setTimeout(atualizarCliAtt, 1000);
+
+        
+      } catch (ex) {
+        Swal.fire("Erro", "Erro ao carregar o gráfico: " + ex.message, "error");
+      }
+    }
+
+    atualizarCliAtt();
+  </script>
 
 {% endblock %}

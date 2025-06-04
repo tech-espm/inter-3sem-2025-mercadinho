@@ -211,6 +211,9 @@
         html.push(`<td>  </td>`);
       }
       for (let i = 0; i < 7 - cmc; i++) {
+        if(i > consolidado.length-1){
+          break;
+        }
         const dado = consolidado[i];
         aux_c++;
         let n = dado.total_entrada / maior;
