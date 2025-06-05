@@ -284,6 +284,28 @@
       const responseLinha = await fetch(
         `/obterFluxoHora?data_inicial=${data_inicial}&data_final=${data_final}`
       );
+
+      const dadosDecisao = await responseDecisao.json();
+
+      if (responseDecisao.status == 500) {
+        Swal.fire("TA ERRADO" + dadosDecisao);
+        return;
+      }
+
+      const dadosLinha = await responseLinha.json();
+
+      if (responseLinha.status == 500) {
+        Swal.fire("TA ERRADO" + dadosLinha);
+        return;
+      }
+
+      const dadosGela = await responseTaxa.json();
+
+      if (responseTaxa.status == 500) {
+        Swal.fire("TA ERRADO" + dadosGela);
+        return;
+      }
+
       if (responseHeat.ok) {
         let consolidadoHeat = await responseHeat.json();
         if (!consolidadoHeat || !consolidadoHeat.length) {
@@ -297,6 +319,11 @@
           return;
         }
 
+        if (responseHeat.status == 500) {
+        Swal.fire("TA ERRADO" + consolidadoHeat);
+        return;
+        }
+
         gerarHeatmap(consolidadoHeat);
         calcularTotalVisitas(consolidadoHeat);
       } else {
@@ -306,7 +333,7 @@
         await exibirErro(responseTaxa);
         return;
       }
-      const dadosGela = await responseTaxa.json();
+      
 
       if (!dadosGela || dadosGela.length === 0) {
         Swal.fire("Erro", "Sem dados no período especificado!", "error");
@@ -373,13 +400,12 @@
         },
       });
 
-      const dadosDecisao = await responseDecisao.json();
+      
 
       const e = document.getElementById("resultado");
 
       e.innerHTML = `${dadosDecisao} minutos `;
 
-      const dadosLinha = await responseLinha.json();
 
       if (
         !dadosLinha ||

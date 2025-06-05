@@ -75,10 +75,10 @@
       let response = await fetch("/atualizarBanco");
       if (response.ok) {
           Swal.close();
-        }
-        if (response[1] == 500) {
-            Swal.fire("Erro", "Erro ao listar os dados: " + response[0].message, "error");
-        }
+        } else {
+            Swal.fire("Erro", "Erro ao listar os dados: " + "ao atualizar", "error")
+        } 
+        
     } catch (ex) {
         Swal.fire("Erro", "Erro ao listar os dados: " + ex.message, "error");
     }
@@ -209,12 +209,12 @@ async function createScene() {
     async function atualizarPortas() {
         const p = await fetch("/atualizaPinguin");
         const pinguin = await p.json();
-        console.log(pinguin[0]["Aberto"], pinguin[0]["Presente"], pinguin[0].message);
+        console.log(pinguin[0]["Aberto"], pinguin[0]["Presente"], p.status);
         if (p.ok) {
             Swal.close();
         }
-        if (pinguin[1] == 500) {
-            Swal.fire("Erro", "Erro ao listar os dados: " + pinguin[0].message, "error");
+        if (p.status == 500) {
+            Swal.fire("Erro", "Erro ao listar os dados: " + pinguin, "error");
             return;
         }
         if (pinguin[0]["Aberto"] == 1 && pinguin[0]["Presente"] == 1) {

@@ -1,4 +1,4 @@
-from flask import Flask, render_template, json, request, Response, jsonify
+from flask import Flask, render_template, json, request, Response, jsonify , make_response 
 import config
 import requests
 from datetime import datetime, timedelta
@@ -79,26 +79,24 @@ def atualizarBanco():
         { 'dia': '18/09', 'valor': 93 },
         { 'dia': '19/09', 'valor': 110 }
     ]
-    return json.jsonify(dados)
+    return json.jsonify(dados) 
 
 
 # Função responsável por popular o heatmap
 @app.get('/obterDadosHeatmap')
 def obterDadosHeatmap():
-    # Obter o maior id do banco
-    maior_id = banco.obterIdMaximo("Id_RegF", "SensorPassagem")
-    
-    resultado = requests.get(f'{config.url_api}?sensor=passage&id_inferior={maior_id}')
-    dados_novos = resultado.json()
-
-	# Inserir os dados novos no banco
-    if dados_novos and len(dados_novos) > 0:
-        banco.inserirPassagem(dados_novos)
 
     dataInicial = request.args["data_inicial"]
     dataFinal = request.args["data_final"]
     dados = banco.listarPassagemMensal(dataInicial, dataFinal)
-    return dados
+
+    resposta = make_response(jsonify(dados))
+    if type(dados) == str:
+        resposta.status_code = 500
+    else:
+        resposta.status_code = 200
+
+    return resposta
 
 # Função para popular o gráfico de linha
 @app.get('/obterFluxoHora')
@@ -111,7 +109,13 @@ def obterFluxoHora():
     else:
         dados = banco.obterFluxoPorHora()
 
-    return dados
+    resposta = make_response(dados)
+    if type(dados) == str:
+        resposta.status_code = 500
+    else:
+        resposta.status_code = 200
+
+    return resposta
 
 # Função para obter o tempo médio de decisão de compra
 @app.get('/obterMediaDecisao')
@@ -125,7 +129,13 @@ def obterMedia():
         dados = banco.obterMediaDecisao()
         print(dados[0][0])
 
-    return jsonify(dados)
+    resposta = make_response(jsonify(dados))
+    if type(dados) == str:
+        resposta.status_code = 500
+    else:
+        resposta.status_code = 200
+
+    return resposta
 
 # Função para popular o gráfico de barras
 @app.get('/obterTaxaAtratividade')
@@ -137,14 +147,27 @@ def obterTaxaAtratividade():
         dados = banco.obterTaxaAtratividade(data_inicial, data_final)
     else:
         dados = banco.obterTaxaAtratividade()
+    
+    resposta = make_response(jsonify(dados))
+    if type(dados) == str:
+        resposta.status_code = 500
+    else:
+        resposta.status_code = 200
 
-    return json.jsonify(dados)
+    return resposta
 
 # Função para popular o KPI de clientes presentes na loja 
 @app.get('/obterFluxoAtual')
 def obterFluxo():
-    clientestuais = banco.obterFluxoAtual()
-    return json.jsonify(clientestuais[0][0])
+    dados = banco.obterFluxoAtual()
+
+    resposta = make_response(jsonify(dados[0][0]))
+    if type(dados) == str:
+        resposta.status_code = 500
+    else:
+        resposta.status_code = 200
+
+    return resposta
 
 
 
@@ -153,7 +176,35 @@ def obterFluxo():
 def atualizaPinguin():
     pinguin = banco.atualizarPinguins()
 
-    return json.jsonify(pinguin)
+    resposta = make_response(jsonify(pinguin))
+    if type(pinguin) == str:
+        resposta.status_code = 500
+    else:
+        resposta.status_code = 200
+
+    return resposta
+
+@app.get('/teste')
+def teste():
+    data_inicial = request.args.get('data_inicial')
+    data_final = request.args.get('data_final')
+
+    if data_inicial and data_final:
+        taxaAtratividade = banco.obterTaxaAtratividade(data_inicial, data_final)
+        mediaDecisao = banco.obterMediaDecisao(data_inicial,data_final)
+        fluxoPorHora = banco.obterFluxoPorHora(data_inicial, data_final)
+    else:
+        taxaAtratividade = banco.obterTaxaAtratividade()
+        mediaDecisao = banco.obterMediaDecisao(data_inicial,data_final)
+        fluxoPorHora = banco.obterFluxoPorHora()
+
+    resposta = make_response((jsonify(taxaAtratividade, mediaDecisao, fluxoPorHora)))
+    if type((taxaAtratividade)) == str or type((mediaDecisao)) == str or type((fluxoPorHora)) == str:
+        resposta.status_code = 500
+    else:
+        resposta.status_code = 200    
+    
+    return resposta
 
 
 if __name__ == '__main__':
