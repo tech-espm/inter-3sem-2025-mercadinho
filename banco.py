@@ -227,14 +227,17 @@ def obterTaxaAtratividade(data_inicial=None, data_final=None):
 			
 			registro = sessao.execute(text(sql), parametros)
 
+			
 			resultado = []
 			for Id_Gelad, total_visitas in registro:
 				resultado.append({
 					"Id_Gelad": Id_Gelad,
 					"total_visitas": total_visitas
 				})
-			
+				
 			return resultado
+			
+		
 	except Exception as e:
 		return ({"message": "Erro ao obter a Taxa de Atratividade"}, 500)
 

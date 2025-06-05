@@ -15,9 +15,25 @@ def index():
     return render_template('index/index.html', mes_passado=mes_passado, hoje=hoje)
 
 # Caminho para a página sobre nós
-@app.get('/sobre')
+@app.get('/sobre-nos')
 def sobre():
-    return render_template('index/sobre.html', titulo='Sobre Nós')
+    return render_template('index/sobre-nos.html', titulo='Sobre Nós')
+
+# Caminho para a página que tem o dashboard
+@app.get('/dash')
+def dash():
+    mes_passado = (datetime.today() + timedelta(days=-30)).strftime('%Y-%m-%d')
+    hoje = datetime.today().strftime('%Y-%m-%d')
+    return render_template('index/dashboard.html', titulo='Dashboard', mes_passado=mes_passado, hoje=hoje)
+
+# Caminho para a página do digital twin
+@app.get('/digital-twin')
+def digitalTwin():
+    return render_template('index/digital-twin.html', titulo='digital-twin')
+
+@app.get('/relatorio')
+def exportar():
+    return render_template('index/relatorio.html', titulo='relatorio')
 
 # Atualiza o banco de dados
 @app.get('/atualizarBanco')
@@ -65,14 +81,6 @@ def atualizarBanco():
     ]
     return json.jsonify(dados)
 
-# Caminho para a página do digital twin
-@app.get('/digitalTwin')
-def digitalTwin():
-    return render_template('index/digitalTwin.html', titulo='digitalTwin')
-
-@app.get('/exportar')
-def exportar():
-    return render_template('index/exportar.html', titulo='Exportação')
 
 # Função responsável por popular o heatmap
 @app.get('/obterDadosHeatmap')
@@ -138,17 +146,7 @@ def obterFluxo():
     clientestuais = banco.obterFluxoAtual()
     return json.jsonify(clientestuais[0][0])
 
-# Caminho para a página que tem os clientes atuais na loja
-@app.get('/atualClientes')
-def atualClientes():
-    return render_template('index/clientesAtuais.html', titulo='clientesAtuais')
 
-# Caminho para a página que tem o dashboard
-@app.get('/dash')
-def dash():
-    mes_passado = (datetime.today() + timedelta(days=-30)).strftime('%Y-%m-%d')
-    hoje = datetime.today().strftime('%Y-%m-%d')
-    return render_template('index/dashboard.html', titulo='Dashboard', mes_passado=mes_passado, hoje=hoje)
 
 # Função para verificar a existencia de cliente na frente da geladeira e se esta está aberta ou fechada
 @app.get('/atualizaPinguin')
