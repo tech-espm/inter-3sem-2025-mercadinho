@@ -29,11 +29,11 @@ def dash():
 # Caminho para a página do digital twin
 @app.get('/digital-twin')
 def digitalTwin():
-    return render_template('index/digital-twin.html', titulo='digital-twin')
+    return render_template('index/digital-twin.html', titulo='Digital Twin')
 
 @app.get('/relatorio')
 def exportar():
-    return render_template('index/relatorio.html', titulo='relatorio')
+    return render_template('index/relatorio.html', titulo='Relatório')
 
 # Atualiza o banco de dados
 @app.get('/atualizarBanco')

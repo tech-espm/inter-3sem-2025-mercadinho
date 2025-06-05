@@ -64,7 +64,7 @@ body {
 
 .formatacao-texto-sobre {
 	text-align: justify;
-	font-size: 15.4px;
+	font-size: 15.6px;
 }
 
 .fundo-cinza-card {
@@ -272,6 +272,6 @@ td {
 	text-align: center;
 }
 
-.alinhaStart{
+.alinhaStart {
 	text-align: start;
 }
