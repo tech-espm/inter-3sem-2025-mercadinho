@@ -43,8 +43,11 @@
                             </div>
                         </div>
                     </div>
+                    <div class="col-sm-12">
+                        <div id="canvasZone"><canvas id="renderCanvas"></canvas></div>
+                    </div>
+
                 </div>
-                <div id="canvasZone"><canvas id="renderCanvas"></canvas></div>
             </div>
         </div>
     </div>
@@ -220,20 +223,23 @@ async function createScene() {
         if (pinguin[0]["Aberto"] == 1 && pinguin[0]["Presente"] == 1) {
 
             togglePessoa(2,1)
-            togglePorta(2,1)
+            togglePorta(2,0)
 
         } else if (pinguin[0]["Aberto"] == 0 && pinguin[0]["Presente"] == 1) {
 
-            togglePorta(2, 0)
+            togglePorta(2, 1)
             togglePessoa(2, 1)
 
         } else if (pinguin[0]["Aberto"] == 1 && pinguin[0]["Presente"] == 0) {
 
-            togglePorta(2, 1)
+            togglePorta(2, 0)
             togglePessoa(2, 0)
 
-        } else {
+        } else if (pinguin[0]["Aberto"] == 0 && pinguin[0]["Presente"] == 0) {
             
+            togglePorta(2, 1)
+            togglePessoa(2, 0)
+        } else {
             togglePorta(2, 0)
             togglePessoa(2, 0)
         }

@@ -162,6 +162,10 @@ body {
 	padding-top: 6px;
 }
 
+.padding-top-listar {
+	padding-top: 32.5px;
+}
+
 .padding-top-redes {
 	padding-top: 8px;
 }
@@ -274,4 +278,8 @@ td {
 
 .alinhaStart {
 	text-align: start;
+}
+
+form input{
+	margin-left: 7px; 
 }

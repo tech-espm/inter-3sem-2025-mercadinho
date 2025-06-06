@@ -33,7 +33,9 @@ def digitalTwin():
 
 @app.get('/relatorio')
 def exportar():
-    return render_template('index/relatorio.html', titulo='Relatório')
+    mes_passado = (datetime.today() + timedelta(days=-30)).strftime('%Y-%m-%d')
+    hoje = datetime.today().strftime('%Y-%m-%d')
+    return render_template('index/relatorio.html', titulo='Relatório',  mes_passado=mes_passado, hoje=hoje)
 
 # Atualiza o banco de dados
 @app.get('/atualizarBanco')
@@ -125,9 +127,10 @@ def obterMedia():
 
     if data_inicial and data_final:
         dados = banco.obterMediaDecisao(data_inicial,data_final)
+        print(dados)
     else:
         dados = banco.obterMediaDecisao()
-        print(dados[0][0])
+        print(dados)
 
     resposta = make_response(jsonify(dados))
     if type(dados) == str:
@@ -185,21 +188,18 @@ def atualizaPinguin():
     return resposta
 
 @app.get('/teste')
-def teste():
+def tabela_presenca():
     data_inicial = request.args.get('data_inicial')
     data_final = request.args.get('data_final')
+    tabela = request.args.get('tabela')
 
     if data_inicial and data_final:
-        taxaAtratividade = banco.obterTaxaAtratividade(data_inicial, data_final)
-        mediaDecisao = banco.obterMediaDecisao(data_inicial,data_final)
-        fluxoPorHora = banco.obterFluxoPorHora(data_inicial, data_final)
+        tabelapresenca = banco.obterTudo(data_inicial, data_final, tabela)
     else:
-        taxaAtratividade = banco.obterTaxaAtratividade()
-        mediaDecisao = banco.obterMediaDecisao(data_inicial,data_final)
-        fluxoPorHora = banco.obterFluxoPorHora()
+        tabelapresenca = banco.obterTudo()
 
-    resposta = make_response((jsonify(taxaAtratividade, mediaDecisao, fluxoPorHora)))
-    if type((taxaAtratividade)) == str or type((mediaDecisao)) == str or type((fluxoPorHora)) == str:
+    resposta = make_response((jsonify(tabelapresenca)))
+    if type((tabelapresenca)) == str:
         resposta.status_code = 500
     else:
         resposta.status_code = 200    

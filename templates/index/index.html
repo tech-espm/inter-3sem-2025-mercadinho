@@ -288,21 +288,33 @@
       const dadosDecisao = await responseDecisao.json();
 
       if (responseDecisao.status == 500) {
-        Swal.fire("TA ERRADO" + dadosDecisao);
+        Swal.fire({
+          icon: "error",
+          title: "Erro",
+          text: "Falha na aquisição do tempo médio de decisão: " + dadosDecisao 
+        });
         return;
       }
 
       const dadosLinha = await responseLinha.json();
 
       if (responseLinha.status == 500) {
-        Swal.fire("TA ERRADO" + dadosLinha);
+        Swal.fire({
+          icon: "error",
+          title: "Erro",
+          text: "Falha na aquisição dos dados do gráfico de linha: " + dadosLinha 
+        });
         return;
       }
 
       const dadosGela = await responseTaxa.json();
 
       if (responseTaxa.status == 500) {
-        Swal.fire("TA ERRADO" + dadosGela);
+        Swal.fire({
+          icon: "error",
+          title: "Erro",
+          text: "Falha na aquisição dos dados do gráfico de atratividade por marcas: " + dadosGela 
+        });
         return;
       }
 
@@ -320,7 +332,11 @@
         }
 
         if (responseHeat.status == 500) {
-        Swal.fire("TA ERRADO" + consolidadoHeat);
+        Swal.fire({
+          icon: "error",
+          title: "Erro",
+          text: "Falha na aquisição dos dados do Heatmap: " + consolidadoHeat 
+        });
         return;
         }
 
@@ -334,6 +350,9 @@
         return;
       }
       
+      const e = document.getElementById("resultado");
+
+      e.innerHTML = `${dadosDecisao} minutos `;
 
       if (!dadosGela || dadosGela.length === 0) {
         Swal.fire("Erro", "Sem dados no período especificado!", "error");
@@ -402,9 +421,7 @@
 
       
 
-      const e = document.getElementById("resultado");
-
-      e.innerHTML = `${dadosDecisao} minutos `;
+      
 
 
       if (

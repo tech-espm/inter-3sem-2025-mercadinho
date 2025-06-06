@@ -1,6 +1,54 @@
 {% extends 'layout.html' %} {% block body %}
 
+<div class="card-body">
+	<div class="row">
+		<div class="col-sm-5">
+			<div class="form-group">
+				<label for="data_inicial">Data Inicial</label>
+				<input
+				id="data_inicial"
+				name="data_inicial"
+				class="form-control"
+				type="date"
+				value="{{mes_passado}}"
+				/>
+				<form>
+					<input type="radio" id="tabelaPresenca" name="tabela" value="tabelaPresenca">
+					<label for="tabelaPresenca">Sensor Presenca</label>
+					<input type="radio" name="tabela" value="tabelaContato">
+					<label for="css">Sensor Contato</label>
+					<input type="radio" checked name="tabela" value="tabelaPassagem">
+					<label for="javascript">Sensor Passagem</label>
+				</form>
+			</div>
+		</div>
+		<div class="col-sm-5">
+			<div class="form-group">
+				<label for="data_final">Data Final</label>
+				<input
+				id="data_final"
+				name="data_final"
+				class="form-control"
+				type="date"
+				value="{{hoje}}"
+				/>
+			</div>
+		</div>
+		<div class="col-sm-2">
+			<div class="padding-top-listar">
+				
+				<button type="submit" class="btn btn-primary" onclick="buscarRegistros()">
+					Listar
+				</button>
+
+			</div>
+		</div>
+	</div>
+
+	
+</div>
 <div id="tabelaContainer"></div>
+
 
 {% endblock %}
 
@@ -29,41 +77,101 @@
 
     let tabela;
 
-    function atualizarTabela(dados) {
+    function atualizarTabela(dados, tabe) {
 		$("#tabelaContainer").html('<table class="table table-flush table-striped table-hover" id="tabela"></table>');
 
 		// https://datatables.net/reference/option/order
 		// https://datatables.net/reference/option/columns
-		tabela = prepareDataTable("tabela", {
-			order: [[0, "asc"]],
-			deferRender: true,
-			columns: [
-				{ title: "Título Texto", render: encode, data: "campoTexto" },
-				{ title: "Título Data/Hora", "type": "customdateint", data: "campoData" },
-				{ title: "Título Data/Hora", "type": "customdatetimeint", data: "campoDataHora" },
-				{ title: "Título Número", "type": "num", data: "campoNumero"},
-			],
-			data: dados,
-			export: { xlsx: true, title: "Dados" }
-		});
+		if (tabe == "tabelaPresenca") {
+      		tabela = prepareDataTable("tabela", {
+				order: [[0, "asc"]],
+				deferRender: true,
+				columns: [
+					{ title: "Id do Registro", "type": "num", data: "Id_RegP" },
+					{ title: "Data", "type": "customdatetimeint", data: "Dt_SenP" },
+					{ title: "Delta", "type": "num", data: "Tm_SenP" },
+					{ title: "Ocupado", "type": "num", data: "Oc_Sens" },
+					{ title: "Freezer", "type": "num", data: "Id_Gelad"},
+					{ title: "Id do Sensor", "type": "num", data: "Id_SenP" }
+				],
+				data: dados,
+				export: { xlsx: true, title: "Dados" }
+			});
+		}
+		else if (tabe == "tabelaContato") {
+      		tabela = prepareDataTable("tabela", {
+				order: [[0, "asc"]],
+				deferRender: true,
+				columns: [
+					{ title: "Id do Registro", "type": "num", data: "Id_RegC" },
+					{ title: "Data", "type": "customdatetimeint", data: "Dt_SenC" },
+					{ title: "Delta", "type": "num", data: "Tm_SenC" },
+					{ title: "Fechado", "type": "num", data: "Ab_SenC" },
+					{ title: "Freezer", "type": "num", data: "Id_Gelad"},
+					{ title: "Id do Sensor", "type": "num", data: "Id_SenC" }
+				],
+				data: dados,
+				export: { xlsx: true, title: "Dados" }
+			});
+		}
+		else if (tabe == "tabelaPassagem") {
+			tabela = prepareDataTable("tabela", {
+				order: [[0, "asc"]],
+				deferRender: true,
+				columns: [
+					{ title: "Id do Registro", "type": "num", data: "Id_RegF" },
+					{ title: "Data", "type": "customdatetimeint", data: "Dt_SenF" },
+					{ title: "Entrada", "type": "num", data: "En_SenF" },
+					{ title: "Saida", "type": "num", data: "Sd_SenF" },
+					{ title: "Id da Loja", "type": "num", data: "Id_Loja"},
+					{ title: "Id do Sensor", "type": "num", data: "Id_SenF" }
+				],
+				data: dados,
+				export: { xlsx: true, title: "Dados" }
+			});
+		}
 	}
 
 	async function buscarRegistros() {
 		waitSwal();
 
-		// @@@ fetch
-		let dados = [
-			{
-				campoTexto: "Teste",
-				campoData: "20/05/2025",
-				campoDataHora: "20/05/2025 10:15",
-				campoNumero: 123,
-			}
-		];
+	try {
+		const tabl = document.querySelector('input[name="tabela"]:checked').value;
+		let data_inicial = document.getElementById("data_inicial").value;
+      	let data_final = document.getElementById("data_final").value;
+		let response;
+
+		if (tabl == "tabelaPresenca") {
+      		response = await fetch(`/teste?data_inicial=${data_inicial}&data_final=${data_final}&tabela=${tabl}`);
+		}
+		else if (tabl == "tabelaContato") {
+      		response = await fetch(`/teste?data_inicial=${data_inicial}&data_final=${data_final}&tabela=${tabl}`);
+		}
+		else if (tabl == "tabelaPassagem") {
+      		response = await fetch(`/teste?data_inicial=${data_inicial}&data_final=${data_final}&tabela=${tabl}`);
+		}
+		let dados = await response.json();
+     	 if (response.ok) {
+        	  Swal.close();
+        } 
+		if(response.status == 500) {
+			Swal.fire({
+				icon: "error",
+				title: "Erro",
+				text: "Falha na aquisição dos dados : " + dados 
+        	});
+        	return;
+		} 
+        
+		atualizarTabela(dados, tabl);
+    } catch (ex) {
+        Swal.fire("Erro", "Erro ao listar os dados: " + ex.message, "error");
+		return;
+    }
+		
 
 		Swal.close();
 
-		atualizarTabela(dados);
 	}
 
 	buscarRegistros();

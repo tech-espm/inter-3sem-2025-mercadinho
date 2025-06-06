@@ -210,8 +210,11 @@ def obterMediaDecisao(data_inicial=None, data_final=None):
 
 			for i in registro:
 				resultado.append(i)
-
-			return resultado[0][0] // 60
+			if resultado[0][0] == None:
+				return 0
+			else: 
+				return resultado[0][0] // 60
+			 
 	except Exception as e:
 		return str(e)
 # Função que extrai os dados do banco para obter a taxa de atratividade 
@@ -236,6 +239,72 @@ def obterTaxaAtratividade(data_inicial=None, data_final=None):
 					"Id_Gelad": Id_Gelad,
 					"total_visitas": total_visitas
 				})
+				
+			return resultado
+			
+	except Exception as e:
+		return str(e)
+	
+
+def obterTudo(data_inicial=None, data_final=None, tabela=None):
+	try:
+		with Session(engine) as sessao:
+			parametros = {}
+
+			parametros["data_inicial"] = data_inicial + " 00:00:00"
+			parametros["data_final"] = data_final + " 23:59:59"
+
+			if tabela == "tabelaPresenca":
+				tab = "sensorpresenca"
+				campodata = "Dt_SenP"
+			elif tabela == "tabelaContato":
+				tab = "sensorcontato"
+				campodata = "Dt_SenC"
+			else:
+				tab = "sensorpassagem"
+				campodata = "Dt_SenF"
+			
+			sql = "select * from "+tab+" where "
+			if data_inicial and data_final:
+
+				sql += campodata +" between :data_inicial and :data_final"
+			
+			registro = sessao.execute(text(sql), parametros)
+
+			
+			resultado = []
+			if tabela == "tabelaPresenca":
+				for Id_RegP, Dt_SenP, Tm_SenP, Oc_Sens, Id_Gelad, Id_SenP in registro:
+					resultado.append({
+						"Id_RegP": Id_RegP,
+						"Dt_SenP": Dt_SenP,
+						"Tm_SenP": Tm_SenP,
+						"Oc_Sens": Oc_Sens,
+						"Id_Gelad": Id_Gelad,
+						"Id_SenP": Id_SenP
+						})
+				
+			elif tabela == "tabelaContato":
+				for Id_RegC, Dt_SenC, Tm_SenC, Ab_SenC, Id_Gelad, Id_SenC in registro:
+					resultado.append({
+						"Id_RegC": Id_RegC,
+						"Dt_SenC": Dt_SenC,
+						"Tm_SenC": Tm_SenC,
+						"Ab_SenC": Ab_SenC,
+						"Id_Gelad": Id_Gelad,
+						"Id_SenC": Id_SenC
+						})
+				
+			else:
+				for Id_RegF, Dt_SenF, En_SenF, Sd_SenF, Id_Loja, Id_SenF in registro:
+					resultado.append({
+						"Id_RegF": Id_RegF,
+						"Dt_SenF": Dt_SenF,
+						"En_SenF": En_SenF,
+						"Sd_SenF": Sd_SenF,
+						"Id_Loja": Id_Loja,
+						"Id_SenF": Id_SenF
+						})
 				
 			return resultado
 			
