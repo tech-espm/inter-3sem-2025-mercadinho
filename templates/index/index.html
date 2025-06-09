@@ -9,7 +9,7 @@
             <div class="card shadow my-4">
               <div class="card-body">
                 <h2 class="card-title">Dashboard</h2>
-                <p class="card-text">
+                <p class="card-text paddinzinho">
                   Visualize as informações sobre o seu ponto de venda, a partir
                   de um filtro temporal.
                 </p>
@@ -102,7 +102,6 @@
 
     try {
       let response = await fetch("/atualizarBanco");
-
     } catch (ex) {
       Swal.fire("Erro", "Erro ao listar os dados: " + ex.message, "error");
     }
@@ -208,7 +207,7 @@
         html.push(`<td>  </td>`);
       }
       for (let i = 0; i < 7 - cmc; i++) {
-        if(i > consolidado.length-1){
+        if (i > consolidado.length - 1) {
           break;
         }
         const dado = consolidado[i];
@@ -288,7 +287,7 @@
         Swal.fire({
           icon: "error",
           title: "Erro",
-          text: "Falha na aquisição do tempo médio de decisão: " + dadosDecisao 
+          text: "Falha na aquisição do tempo médio de decisão: " + dadosDecisao,
         });
         return;
       }
@@ -299,7 +298,8 @@
         Swal.fire({
           icon: "error",
           title: "Erro",
-          text: "Falha na aquisição dos dados do gráfico de linha: " + dadosLinha 
+          text:
+            "Falha na aquisição dos dados do gráfico de linha: " + dadosLinha,
         });
         return;
       }
@@ -310,7 +310,9 @@
         Swal.fire({
           icon: "error",
           title: "Erro",
-          text: "Falha na aquisição dos dados do gráfico de atratividade por marcas: " + dadosGela 
+          text:
+            "Falha na aquisição dos dados do gráfico de atratividade por marcas: " +
+            dadosGela,
         });
         return;
       }
@@ -329,12 +331,12 @@
         }
 
         if (responseHeat.status == 500) {
-        Swal.fire({
-          icon: "error",
-          title: "Erro",
-          text: "Falha na aquisição dos dados do Heatmap: " + consolidadoHeat 
-        });
-        return;
+          Swal.fire({
+            icon: "error",
+            title: "Erro",
+            text: "Falha na aquisição dos dados do Heatmap: " + consolidadoHeat,
+          });
+          return;
         }
 
         gerarHeatmap(consolidadoHeat);
@@ -346,7 +348,7 @@
         await exibirErro(responseTaxa);
         return;
       }
-      
+
       const e = document.getElementById("resultado");
 
       e.innerHTML = `${dadosDecisao} minutos `;
@@ -415,11 +417,6 @@
           },
         },
       });
-
-      
-
-      
-
 
       if (
         !dadosLinha ||

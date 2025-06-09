@@ -276,10 +276,14 @@ td {
 	text-align: center;
 }
 
+.paddinzinho {
+	padding-bottom: 41px;
+}
+
 .alinhaStart {
 	text-align: start;
 }
 
-form input{
-	margin-left: 7px; 
+form input {
+	margin-left: 7px;
 }

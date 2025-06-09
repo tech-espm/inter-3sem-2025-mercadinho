@@ -1,115 +1,139 @@
-{% extends 'layout.html' %}
-
-{% block head %}
+{% extends 'layout.html' %} {% block head %}
 <!-- Babylon.js -->
 <script src="https://cdn.babylonjs.com/babylon.js"></script>
 <script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
 <script src="https://cdn.babylonjs.com/gui/babylon.gui.min.js"></script>
 
 <style type="text/css">
-    #canvasZone {
-        position: relative;
-        margin: 0;
-        padding: 0;
-        width: 100%;
-        min-height: 400px;
-        height: 60vh;
-    }
+  #canvasZone {
+    position: relative;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 400px;
+    height: 60vh;
+  }
 
-    #renderCanvas {
-        margin: 0;
-        padding: 0;
-        width: 100%;
-        height: 100%;
-        border: none;
-        outline: none;
-        user-select: none;
-        touch-action: none;
-    }
+  #renderCanvas {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+    outline: none;
+    user-select: none;
+    touch-action: none;
+  }
 </style>
-{% endblock %}
-
-{% block body %}
+{% endblock %} {% block body %}
 
 <div class="container-fluid">
-    <div class="col-xl-12">
-        <div class="card shadow my-4">
-            <div class="card-body">
-                <div class="container-fluid">
-                    <div class="col-sm-6">
-                        <div class="card shadow my-4">
-                            <div class="card-body">
-                                <p id="resultado" class="GdsNums alinhaStart"></p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-sm-12">
-                        <div id="canvasZone"><canvas id="renderCanvas"></canvas></div>
-                        <div class="text-center my-2">
-                            <div class="mb-2">
-                                <b>Última atualização:</b>
-                                <span id="ultimaAtualizacao">-</span>
-                            </div>
-                            <label for="cbAleatorio">
-                                <input type="checkbox" id="cbAleatorio" onchange="aleatorio = this.checked;" />
-                                Simular dados aleatórios
-                            </label>
-                        </div>
-                    </div>
+  <div class="col-xl-12">
+    <div class="card shadow my-4">
+      <div class="card-body">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-sm-6">
+              <div class="card shadow my-4">
+                <div class="card-body">
+                  <h2>Digital Twin</h2>
                 </div>
+              </div>
             </div>
+            <div class="col-sm-6">
+              <div class="card shadow my-4">
+                <div class="card-body">
+                  <h2 id="resultado" class="alinhaStart"></h2>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-12">
+              <div id="canvasZone"><canvas id="renderCanvas"></canvas></div>
+              <div class="text-center my-2">
+                <div class="mb-2">
+                  <b>Última atualização:</b>
+                  <span id="ultimaAtualizacao">-</span>
+                </div>
+                <label for="cbAleatorio">
+                  <input
+                    type="checkbox"
+                    id="cbAleatorio"
+                    onchange="aleatorio = this.checked;"
+                  />
+                  Simular dados aleatórios
+                </label>
+              </div>
+            </div>
+          </div>
         </div>
+      </div>
     </div>
+  </div>
 </div>
 
 <!-- BabylonJS - Controle das portas -->
 <script type="text/javascript">
-    "use strict";
+  "use strict";
 
-    let canvas = document.getElementById("renderCanvas");
-    let engine = null;
-    let scene = null;
-    let aleatorio = false;
+  let canvas = document.getElementById("renderCanvas");
+  let engine = null;
+  let scene = null;
+  let aleatorio = false;
 
-    let portaModelos = {
-        1: { aberta: null, fechada: null, abertaAtiva: false },
-        2: { aberta: null, fechada: null, abertaAtiva: false },
-        3: { aberta: null, fechada: null, abertaAtiva: false },
-    };
-    let pessoaModelos = {
-        1: { mesh: null, visivel: false },
-        2: { mesh: null, visivel: false },
-        3: { mesh: null, visivel: false }
-    };
+  let portaModelos = {
+    1: { aberta: null, fechada: null, abertaAtiva: false },
+    2: { aberta: null, fechada: null, abertaAtiva: false },
+    3: { aberta: null, fechada: null, abertaAtiva: false },
+  };
+  let pessoaModelos = {
+    1: { mesh: null, visivel: false },
+    2: { mesh: null, visivel: false },
+    3: { mesh: null, visivel: false },
+  };
 
-    async function atualizarDadosGeral() {
-
+  async function atualizarDadosGeral() {
     try {
       let response = await fetch("/atualizarBanco");
       if (response.ok) {
-          Swal.close();
-        } else {
-            await Swal.fire("Erro", "Erro ao listar os dados: " + "ao atualizar", "error")
-        } 
+        Swal.close();
+      } else {
+        await Swal.fire(
+          "Erro",
+          "Erro ao listar os dados: " + "ao atualizar",
+          "error"
+        );
+      }
 
-        const ultimaAtualizacao = document.getElementById("ultimaAtualizacao");
-        ultimaAtualizacao.textContent = new Date().toLocaleString();
+      const ultimaAtualizacao = document.getElementById("ultimaAtualizacao");
+      ultimaAtualizacao.textContent = new Date().toLocaleString();
     } catch (ex) {
-        await Swal.fire("Erro", "Erro ao listar os dados: " + ex.message, "error");
+      await Swal.fire(
+        "Erro",
+        "Erro ao listar os dados: " + ex.message,
+        "error"
+      );
     }
-}
+  }
 
-async function carregarModelo(path, scene) {
-    const result = await BABYLON.SceneLoader.ImportMeshAsync("", "/static/glb/", path, scene);
+  async function carregarModelo(path, scene) {
+    const result = await BABYLON.SceneLoader.ImportMeshAsync(
+      "",
+      "/static/glb/",
+      path,
+      scene
+    );
     return result.meshes[0];
-}
+  }
 
-async function createScene() {
+  async function createScene() {
     scene = new BABYLON.Scene(engine);
-    
-    const hdrTexture = BABYLON.CubeTexture.CreateFromPrefilteredData("/static/glb/environment.dds", scene);
+
+    const hdrTexture = BABYLON.CubeTexture.CreateFromPrefilteredData(
+      "/static/glb/environment.dds",
+      scene
+    );
     scene.createDefaultSkybox(hdrTexture, true);
-    
+
     scene.createDefaultCameraOrLight(true, true, true);
     const camera = scene.activeCamera;
     //camera.alpha = Math.PI / 2;
@@ -117,200 +141,184 @@ async function createScene() {
     camera.beta = 1.188337079465186;
     camera.radius = 6.99621204442228;
     camera.target.x = -1;
-    
-    
+
     // criacao da luz (vector 3 = posicao)
-    //const luz = new BABYLON.HemisphericLight("hemiLight", new BABYLON.Vector3(0, 1, 0), scene); 
+    //const luz = new BABYLON.HemisphericLight("hemiLight", new BABYLON.Vector3(0, 1, 0), scene);
     //luz.intensity = 0.9;
     //luz.diffuse = new BABYLON.Color3(1, 1, 1); // cor da luz
-    
+
     //fundo
-    scene.clearColor = new BABYLON.Color4(); 
+    scene.clearColor = new BABYLON.Color4();
     scene.clearColor = BABYLON.Color4.FromHexString("#87CEEB");
-    
-    
-    
+
     // modelo loja
     await carregarModelo("Loja.glb", scene);
-    
-    
-    
+
     // Porta 1
     portaModelos[1].fechada = await carregarModelo("Porta01Fechada.glb", scene);
     portaModelos[1].aberta = await carregarModelo("Porta01Aberta.glb", scene);
     portaModelos[1].aberta.setEnabled(false);
-    
+
     // Porta 2
     portaModelos[2].fechada = await carregarModelo("Porta02Fechada.glb", scene);
     portaModelos[2].aberta = await carregarModelo("Porta02Aberta.glb", scene);
     portaModelos[2].aberta.setEnabled(false);
-    
+
     // Porta 3
     portaModelos[3].fechada = await carregarModelo("Porta03Fechada.glb", scene);
     portaModelos[3].aberta = await carregarModelo("Porta03Aberta.glb", scene);
     portaModelos[3].aberta.setEnabled(false);
-    
 
-        // Pessoa 1
-        pessoaModelos[1].mesh = await carregarModelo("Cliente01.glb", scene);
-        pessoaModelos[1].mesh.setEnabled(false);
-        pessoaModelos[1].visivel = false;
-        
-        // Pessoa 2
-        pessoaModelos[2].mesh = await carregarModelo("Cliente02.glb", scene);
-        pessoaModelos[2].mesh.setEnabled(false);
-        pessoaModelos[2].visivel = false;
-        
-        // Pessoa 3
-        pessoaModelos[3].mesh = await carregarModelo("Cliente03.glb", scene);
-        pessoaModelos[3].mesh.setEnabled(false);
-        pessoaModelos[3].visivel = false;
+    // Pessoa 1
+    pessoaModelos[1].mesh = await carregarModelo("Cliente01.glb", scene);
+    pessoaModelos[1].mesh.setEnabled(false);
+    pessoaModelos[1].visivel = false;
+
+    // Pessoa 2
+    pessoaModelos[2].mesh = await carregarModelo("Cliente02.glb", scene);
+    pessoaModelos[2].mesh.setEnabled(false);
+    pessoaModelos[2].visivel = false;
+
+    // Pessoa 3
+    pessoaModelos[3].mesh = await carregarModelo("Cliente03.glb", scene);
+    pessoaModelos[3].mesh.setEnabled(false);
+    pessoaModelos[3].visivel = false;
+  }
+
+  function togglePorta(index, a) {
+    const porta = portaModelos[index];
+    if (!porta.aberta || !porta.fechada) return;
+
+    if (a == 1) {
+      porta.abertaAtiva = true;
+    } else if (a == 0) {
+      porta.abertaAtiva = false;
     }
-    
-    function togglePorta(index, a) {
-        const porta = portaModelos[index];
-        if (!porta.aberta || !porta.fechada) return;
-        
-        if (a == 1){
-            porta.abertaAtiva = true;
-        } else if (a == 0){
-            porta.abertaAtiva = false;
-        }
-        porta.aberta.setEnabled(porta.abertaAtiva);
-        porta.fechada.setEnabled(!porta.abertaAtiva);
+    porta.aberta.setEnabled(porta.abertaAtiva);
+    porta.fechada.setEnabled(!porta.abertaAtiva);
+  }
+
+  function togglePessoa(index, presenca) {
+    const registro = pessoaModelos[index];
+    if (!registro.mesh) return;
+
+    if (presenca === 1) {
+      registro.visivel = true;
+    } else if (presenca === 0) {
+      registro.visivel = false;
+    } else {
+      registro.visivel = !registro.visivel;
     }
-    
-    function togglePessoa(index, presenca) {
-        const registro = pessoaModelos[index];
-        if (!registro.mesh) return;
-        
-        if (presenca === 1) {
-            registro.visivel = true;
-        } else if (presenca === 0) {
-            registro.visivel = false;
-        } else {
-            registro.visivel = !registro.visivel;
-        }
-        
-        registro.mesh.setEnabled(registro.visivel);
+
+    registro.mesh.setEnabled(registro.visivel);
+  }
+
+  async function init() {
+    try {
+      engine = new BABYLON.Engine(canvas, true, {
+        preserveDrawingBuffer: false,
+        stencil: false,
+        disableWebGL2Support: false,
+      });
+      await createScene();
+    } catch (ex) {
+      alert("Erro ao criar a engine: " + ex.message || ex.toString());
     }
-    
-    async function init() {
-        try {
-            engine = new BABYLON.Engine(canvas, true, {
-                preserveDrawingBuffer: false,
-                stencil: false,
-                disableWebGL2Support: false
-            });
-            await createScene();
-        } catch (ex) {
-            alert("Erro ao criar a engine: " + ex.message || ex.toString());
-        }
-        
-        window.addEventListener("resize", function () {
-            engine.resize();
-        });
-        
-        engine.runRenderLoop(function () {
-            if (scene && scene.activeCamera) {
-                scene.render();
-            }
-        });
-        
+
+    window.addEventListener("resize", function () {
+      engine.resize();
+    });
+
+    engine.runRenderLoop(function () {
+      if (scene && scene.activeCamera) {
+        scene.render();
+      }
+    });
+  }
+  window.addEventListener("load", init);
+
+  async function atualizarPortas() {
+    await atualizarDadosGeral();
+    const p = await fetch("/atualizaPinguin");
+    const pinguin = await p.json();
+    console.log(pinguin[0]["Aberto"], pinguin[0]["Presente"], p.status);
+    if (p.ok) {
+      Swal.close();
     }
-    window.addEventListener("load", init);
-    
-    
-    async function atualizarPortas() {
-        await atualizarDadosGeral();
-        const p = await fetch("/atualizaPinguin");
-        const pinguin = await p.json();
-        console.log(pinguin[0]["Aberto"], pinguin[0]["Presente"], p.status);
-        if (p.ok) {
-            Swal.close();
-        }
-        if (p.status == 500) {
-            Swal.fire("Erro", "Erro ao listar os dados: " + pinguin, "error");
-            return;
-        }
-
-        if (aleatorio) {
-            if (Math.random() < 0.5) {
-                togglePessoa(2,0)
-                togglePorta(2,0)
-            } else {
-                togglePessoa(2,1)
-                togglePorta(2,1)
-            }
-        } else {
-            if (pinguin[0]["Aberto"] == 1 && pinguin[0]["Presente"] == 1) {
-
-                togglePessoa(2,1)
-                togglePorta(2,0)
-
-            } else if (pinguin[0]["Aberto"] == 0 && pinguin[0]["Presente"] == 1) {
-
-                togglePorta(2, 1)
-                togglePessoa(2, 1)
-
-            } else if (pinguin[0]["Aberto"] == 1 && pinguin[0]["Presente"] == 0) {
-
-                togglePorta(2, 0)
-                togglePessoa(2, 0)
-
-            } else if (pinguin[0]["Aberto"] == 0 && pinguin[0]["Presente"] == 0) {
-                
-                togglePorta(2, 1)
-                togglePessoa(2, 0)
-            } else {
-                togglePorta(2, 0)
-                togglePessoa(2, 0)
-            }
-        }
-
-        setTimeout(atualizarPortas, aleatorio ? 3000 : 1000);
+    if (p.status == 500) {
+      Swal.fire("Erro", "Erro ao listar os dados: " + pinguin, "error");
+      return;
     }
-    atualizarPortas();
-    window.addEventListener("load", init);
-</script>
 
-<script type="text/javascript">
-    "use strict";
-
-    async function atualizarCliAtt() {
-      //waitSwal();
-
-      try {
-
-        const response = await fetch(
-          `/obterFluxoAtual`
-        );
-
-        if (!response.ok) {
-          await exibirErro(response);
-          return;
-        }
-
-        Swal.close();
-        const dados = await response.json();
-
-        if (dados[1] == 500) {
-            Swal.fire("Erro", "Erro ao listar os dados: " + dados[0].message, "error");
-        }
-        
-        const e = document.getElementById("resultado");
-        
-        e.innerHTML = Math.abs(dados) + ` clientes na loja`;
-
-        setTimeout(atualizarCliAtt, 1000);
-
-        
-      } catch (ex) {
-        Swal.fire("Erro", "Erro ao carregar o gráfico: " + ex.message, "error");
+    if (aleatorio) {
+      if (Math.random() < 0.5) {
+        togglePessoa(2, 0);
+        togglePorta(2, 0);
+      } else {
+        togglePessoa(2, 1);
+        togglePorta(2, 1);
+      }
+    } else {
+      if (pinguin[0]["Aberto"] == 1 && pinguin[0]["Presente"] == 1) {
+        togglePessoa(2, 1);
+        togglePorta(2, 0);
+      } else if (pinguin[0]["Aberto"] == 0 && pinguin[0]["Presente"] == 1) {
+        togglePorta(2, 1);
+        togglePessoa(2, 1);
+      } else if (pinguin[0]["Aberto"] == 1 && pinguin[0]["Presente"] == 0) {
+        togglePorta(2, 0);
+        togglePessoa(2, 0);
+      } else if (pinguin[0]["Aberto"] == 0 && pinguin[0]["Presente"] == 0) {
+        togglePorta(2, 1);
+        togglePessoa(2, 0);
+      } else {
+        togglePorta(2, 0);
+        togglePessoa(2, 0);
       }
     }
 
-    atualizarCliAtt();
-  </script>
+    setTimeout(atualizarPortas, aleatorio ? 3000 : 1000);
+  }
+  atualizarPortas();
+  window.addEventListener("load", init);
+</script>
+
+<script type="text/javascript">
+  "use strict";
+
+  async function atualizarCliAtt() {
+    //waitSwal();
+
+    try {
+      const response = await fetch(`/obterFluxoAtual`);
+
+      if (!response.ok) {
+        await exibirErro(response);
+        return;
+      }
+
+      Swal.close();
+      const dados = await response.json();
+
+      if (dados[1] == 500) {
+        Swal.fire(
+          "Erro",
+          "Erro ao listar os dados: " + dados[0].message,
+          "error"
+        );
+      }
+
+      const e = document.getElementById("resultado");
+
+      e.innerHTML = Math.abs(dados) + ` clientes na loja`;
+
+      setTimeout(atualizarCliAtt, 1000);
+    } catch (ex) {
+      Swal.fire("Erro", "Erro ao carregar o gráfico: " + ex.message, "error");
+    }
+  }
+
+  atualizarCliAtt();
+</script>
 
 {% endblock %}
