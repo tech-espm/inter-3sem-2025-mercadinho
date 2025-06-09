@@ -255,16 +255,19 @@ def obterTudo(data_inicial=None, data_final=None, tabela=None):
 			parametros["data_final"] = data_final + " 23:59:59"
 
 			if tabela == "tabelaPresenca":
-				sql = "select Id_RegP, date_format(Dt_SenP, '%Y/%m/%d %H:%i') as Dia_Hora, Tm_SenP, Oc_Sens, Id_Gelad, Id_SenP from sensorpresenca where Dt_SenP"
+				tab = "sensorpresenca"
+				campodata = "Dt_SenP"
 			elif tabela == "tabelaContato":
-				sql = "select Id_RegC, date_format(Dt_SenC, '%Y/%m/%d %H:%i') as Dia_Hora, Tm_SenC, Ab_SenC, Id_Gelad, Id_SenC from sensorcontato where Dt_SenC"
+				tab = "sensorcontato"
+				campodata = "Dt_SenC"
 			else:
-				sql = "select Id_RegF, date_format(Dt_SenF, '%Y/%m/%d %H:%i') as Dia_Hora, En_SenF, Sd_SenF, Id_Loja, Id_SenF from sensorpassagem where Dt_SenF"
+				tab = "sensorpassagem"
+				campodata = "Dt_SenF"
 			
-			
+			sql = "select * from "+tab+" where "
 			if data_inicial and data_final:
 
-				sql +=" between :data_inicial and :data_final"
+				sql += campodata +" between :data_inicial and :data_final"
 			
 			registro = sessao.execute(text(sql), parametros)
 
