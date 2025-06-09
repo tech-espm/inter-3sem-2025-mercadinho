@@ -195,7 +195,7 @@ def obterMediaDecisao(data_inicial=None, data_final=None):
 	try:
 		with Session(engine) as sessao:
 			parametros = {}
-			sql = "select avg(delta) from (select avg(Tm_SenP) as delta,  date_format(Dt_SenP, '%Y/%m/%d %H:%i') as Dia from sensorpresenca where date_format(Dt_SenP, '%Y/%m/%d %H:%i') in (select date_format(Dt_SenC, '%Y/%m/%d %H:%i') from sensorcontato "
+			sql = "select avg(delta) from (select avg(Tm_SenP) as delta,  date_format(Dt_SenP, '%Y/%m/%d %H:%i') as Dia from SensorPresenca where date_format(Dt_SenP, '%Y/%m/%d %H:%i') in (select date_format(Dt_SenC, '%Y/%m/%d %H:%i') from SensorContato "
 			if data_inicial and data_final:
 				sql += """where Ab_SenC = 1 and Dt_SenC between :data_inicial and :data_final )	group by date_format(Dt_SenP, '%Y/%m/%d %H:%i')) as n;"""
 				parametros["data_inicial"] = data_inicial + " 00:00:00"
@@ -222,7 +222,7 @@ def obterTaxaAtratividade(data_inicial=None, data_final=None):
 	try:
 		with Session(engine) as sessao:
 			parametros = {}
-			sql = "select Id_Gelad, count(*) as total_visitas from sensorpresenca where Oc_Sens = 1"
+			sql = "select Id_Gelad, count(*) as total_visitas from SensorPresenca where Oc_Sens = 1"
 			if data_inicial and data_final:
 				sql += " and Dt_SenP between :data_inicial and :data_final"
 				parametros["data_inicial"] = data_inicial + " 00:00:00"
@@ -255,11 +255,11 @@ def obterTudo(data_inicial=None, data_final=None, tabela=None):
 			parametros["data_final"] = data_final + " 23:59:59"
 
 			if tabela == "tabelaPresenca":
-				sql = "select Id_RegP, date_format(Dt_SenP, '%Y/%m/%d %H:%i') as Dia_Hora, Tm_SenP, Oc_Sens, Id_Gelad, Id_SenP from sensorpresenca where Dt_SenP"
+				sql = "select Id_RegP, date_format(Dt_SenP, '%Y/%m/%d %H:%i') as Dia_Hora, Tm_SenP, Oc_Sens, Id_Gelad, Id_SenP from SensorPresenca where Dt_SenP"
 			elif tabela == "tabelaContato":
-				sql = "select Id_RegC, date_format(Dt_SenC, '%Y/%m/%d %H:%i') as Dia_Hora, Tm_SenC, Ab_SenC, Id_Gelad, Id_SenC from sensorcontato where Dt_SenC"
+				sql = "select Id_RegC, date_format(Dt_SenC, '%Y/%m/%d %H:%i') as Dia_Hora, Tm_SenC, Ab_SenC, Id_Gelad, Id_SenC from SensorContato where Dt_SenC"
 			else:
-				sql = "select Id_RegF, date_format(Dt_SenF, '%Y/%m/%d %H:%i') as Dia_Hora, En_SenF, Sd_SenF, Id_Loja, Id_SenF from sensorpassagem where Dt_SenF"
+				sql = "select Id_RegF, date_format(Dt_SenF, '%Y/%m/%d %H:%i') as Dia_Hora, En_SenF, Sd_SenF, Id_Loja, Id_SenF from SensorPassagem where Dt_SenF"
 			
 			
 			if data_inicial and data_final:
@@ -330,8 +330,8 @@ def atualizarPinguins():
 	try:
 		with Session(engine) as sessao:
 			p = sessao.execute(text("""select 
-				(select c.Ab_SenC from sensorcontato c where c.Id_SenC = 3 order by c.Id_RegC desc limit 1) aberto,
-				(select p.Oc_Sens from sensorpresenca p where p.Id_SenP = 3 order by p.Id_RegP desc limit 1) presente"""))
+				(select c.Ab_SenC from SensorContato c where c.Id_SenC = 3 order by c.Id_RegC desc limit 1) aberto,
+				(select p.Oc_Sens from SensorPresenca p where p.Id_SenP = 3 order by p.Id_RegP desc limit 1) presente"""))
 
 			pinguin = []
 

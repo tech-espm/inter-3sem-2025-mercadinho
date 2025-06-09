@@ -45,8 +45,17 @@
                     </div>
                     <div class="col-sm-12">
                         <div id="canvasZone"><canvas id="renderCanvas"></canvas></div>
+                        <div class="text-center my-2">
+                            <div class="mb-2">
+                                <b>Última atualização:</b>
+                                <span id="ultimaAtualizacao">-</span>
+                            </div>
+                            <label for="cbAleatorio">
+                                <input type="checkbox" id="cbAleatorio" onchange="aleatorio = this.checked;" />
+                                Simular dados aleatórios
+                            </label>
+                        </div>
                     </div>
-
                 </div>
             </div>
         </div>
@@ -60,6 +69,7 @@
     let canvas = document.getElementById("renderCanvas");
     let engine = null;
     let scene = null;
+    let aleatorio = false;
 
     let portaModelos = {
         1: { aberta: null, fechada: null, abertaAtiva: false },
@@ -79,11 +89,13 @@
       if (response.ok) {
           Swal.close();
         } else {
-            Swal.fire("Erro", "Erro ao listar os dados: " + "ao atualizar", "error")
+            await Swal.fire("Erro", "Erro ao listar os dados: " + "ao atualizar", "error")
         } 
-        
+
+        const ultimaAtualizacao = document.getElementById("ultimaAtualizacao");
+        ultimaAtualizacao.textContent = new Date().toLocaleString();
     } catch (ex) {
-        Swal.fire("Erro", "Erro ao listar os dados: " + ex.message, "error");
+        await Swal.fire("Erro", "Erro ao listar os dados: " + ex.message, "error");
     }
 }
 
@@ -210,6 +222,7 @@ async function createScene() {
     
     
     async function atualizarPortas() {
+        await atualizarDadosGeral();
         const p = await fetch("/atualizaPinguin");
         const pinguin = await p.json();
         console.log(pinguin[0]["Aberto"], pinguin[0]["Presente"], p.status);
@@ -220,32 +233,42 @@ async function createScene() {
             Swal.fire("Erro", "Erro ao listar os dados: " + pinguin, "error");
             return;
         }
-        if (pinguin[0]["Aberto"] == 1 && pinguin[0]["Presente"] == 1) {
 
-            togglePessoa(2,1)
-            togglePorta(2,0)
-
-        } else if (pinguin[0]["Aberto"] == 0 && pinguin[0]["Presente"] == 1) {
-
-            togglePorta(2, 1)
-            togglePessoa(2, 1)
-
-        } else if (pinguin[0]["Aberto"] == 1 && pinguin[0]["Presente"] == 0) {
-
-            togglePorta(2, 0)
-            togglePessoa(2, 0)
-
-        } else if (pinguin[0]["Aberto"] == 0 && pinguin[0]["Presente"] == 0) {
-            
-            togglePorta(2, 1)
-            togglePessoa(2, 0)
+        if (aleatorio) {
+            if (Math.random() < 0.5) {
+                togglePessoa(2,0)
+                togglePorta(2,0)
+            } else {
+                togglePessoa(2,1)
+                togglePorta(2,1)
+            }
         } else {
-            togglePorta(2, 0)
-            togglePessoa(2, 0)
+            if (pinguin[0]["Aberto"] == 1 && pinguin[0]["Presente"] == 1) {
+
+                togglePessoa(2,1)
+                togglePorta(2,0)
+
+            } else if (pinguin[0]["Aberto"] == 0 && pinguin[0]["Presente"] == 1) {
+
+                togglePorta(2, 1)
+                togglePessoa(2, 1)
+
+            } else if (pinguin[0]["Aberto"] == 1 && pinguin[0]["Presente"] == 0) {
+
+                togglePorta(2, 0)
+                togglePessoa(2, 0)
+
+            } else if (pinguin[0]["Aberto"] == 0 && pinguin[0]["Presente"] == 0) {
+                
+                togglePorta(2, 1)
+                togglePessoa(2, 0)
+            } else {
+                togglePorta(2, 0)
+                togglePessoa(2, 0)
+            }
         }
 
-        setTimeout(atualizarDadosGeral, 1000);
-        setTimeout(atualizarPortas, 1000);
+        setTimeout(atualizarPortas, aleatorio ? 3000 : 1000);
     }
     atualizarPortas();
     window.addEventListener("load", init);
