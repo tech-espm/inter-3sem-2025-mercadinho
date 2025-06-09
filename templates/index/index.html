@@ -103,9 +103,6 @@
     try {
       let response = await fetch("/atualizarBanco");
 
-      if (response.ok) {
-        Swal.close();
-      }
     } catch (ex) {
       Swal.fire("Erro", "Erro ao listar os dados: " + ex.message, "error");
     }
@@ -257,7 +254,7 @@
     },
   });
 
-  let meuGrafico;
+  let graficoFluxoHora;
   let graficoAtratividade;
 
   const nomesGeladeiras = {
@@ -324,8 +321,8 @@
           Swal.fire("Erro", "Sem dados no período especificado!", "error");
           graficoAtratividade.destroy();
           graficoAtratividade = null;
-          meuGrafico.destroy();
-          meuGrafico = null;
+          graficoFluxoHora.destroy();
+          graficoFluxoHora = null;
           document.getElementById("div-heatmap").innerHTML = "";
           document.getElementById("div-decisao").innerHTML = "";
           return;
@@ -430,9 +427,9 @@
         dadosLinha.every((item) => !item.entradas && !item.saidas)
       ) {
         Swal.fire("Erro", "Sem dados no período especificado!", "error");
-        if (meuGrafico) {
-          meuGrafico.destroy();
-          meuGrafico = null;
+        if (graficoFluxoHora) {
+          graficoFluxoHora.destroy();
+          graficoFluxoHora = null;
         }
         return;
       }
@@ -443,11 +440,11 @@
 
       const ctx1 = document.getElementById("graficoFluxoHora").getContext("2d");
 
-      if (meuGrafico) {
-        meuGrafico.destroy();
+      if (graficoFluxoHora) {
+        graficoFluxoHora.destroy();
       }
 
-      meuGrafico = new Chart(ctx1, {
+      graficoFluxoHora = new Chart(ctx1, {
         type: "line",
         data: {
           labels: horas,
