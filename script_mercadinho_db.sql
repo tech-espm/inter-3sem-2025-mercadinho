@@ -157,14 +157,14 @@ SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 
 -- -----------------------------------------------------
--- Table `loja` --> Inserção de dados
+-- Table `Loja` --> Inserção de dados
 -- -----------------------------------------------------
-insert into loja values(1, 'Pequeno Francisco');
+insert into Loja values(1, 'Pequeno Francisco');
 
 -- -----------------------------------------------------
--- Table `geladeira` --> Inserção de dados
+-- Table `Geladeira` --> Inserção de dados
 -- -----------------------------------------------------
 
-insert into geladeira values(1, 1, 'Tom e Jerrys');
-insert into geladeira values(2, 1, 'Kibão');
-insert into geladeira values(3, 1, 'Batche de Latche');
+insert into Geladeira values(1, 1, 'Tom e Jerrys');
+insert into Geladeira values(2, 1, 'Kibão');
+insert into Geladeira values(3, 1, 'Batche de Latche');
